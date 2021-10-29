@@ -7,8 +7,6 @@ class GenerujZawieszke:
 		self.time = []
 		self.czasPracyDzwigu = _lczasPracyDzwigu
 		self.czasPrzejazduDzwigu = _lczasPrzejazduDzwigu
-		#self.czasStartu = 
-		#self.przesuniecie = 0
 		self.csv = {}
 		self.open(_lpath)
 
