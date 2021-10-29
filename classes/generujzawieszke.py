@@ -5,9 +5,11 @@ class GenerujZawieszke:
 	def __init__(self, _lpath, _lczasPracyDzwigu, _lczasPrzejazduDzwigu):
 		self.tubs = []
 		self.time = []
+		self.czasPracyDzwigu = _lczasPracyDzwigu
+		self.czasPrzejazduDzwigu = _lczasPrzejazduDzwigu
 		#self.czasStartu = 
 		#self.przesuniecie = 0
-		#self.csv = {}
+		self.csv = {}
 		self.open(_lpath)
 
 	def open(self, _lpath):
@@ -19,29 +21,20 @@ class GenerujZawieszke:
 			_rowt = next(_csv_reader)
 			self.czasStartu = datetime.strptime(_rowt[0], '%d-%m-%Y %H:%M:%S')
 
-	'''
-	def open(self, lpath):
-		_csv = []
-		with open(lpath) as csv_file:
-			csv_reader = csv.reader(csv_file, delimiter=',')
-			
-			# Odczytanie numeru programu i czasu startu zawieszki
-			rowt = next(csv_reader)
-			self.numer_programu = rowt[0]
-			self.dataStartu = rowt[1]
-			self.czasStartu = rowt[2]
-			self.przesuniecie = rowt[3]
-			
-			for row in csv_reader:
+			# Jeśli ilosc powtorzeń wynosi zero, to ustaw jeden
+			for row in _csv_reader:
 				if (int(row[3]) == 0):
 					_tmp = 1
 				else:
 					_tmp = int(row[3])
 
-				# Dodanie do programu czasu przejazdu dźwigu i czasu jego pracy np. [2, 930]
+				# 0: wanna, 1: czas pracy, 2: obciek, 3: powtorzenia [900,10,1]
 				self.csv[int(row[0])] = [int(row[1]), int(row[2]), int(row[3])]
-				_csv.append( [ int(row[0]), (int(row[1])+self.czasPracyDzwigu+int(row[2]))*_tmp ] )
+				# Korekcja czasu pracy o czas pracy dźwigu i ilość powtorzeń [1, 930]
+				_csv.append( [ int(row[0]), (int(row[1])+ self.czasPracyDzwigu +int(row[2]))*_tmp ] )
 
+			# Generowanie listy tubes: [1, 1, 2, 2, 3, 3, 4, 4, ...]
+			# Generowanie listy times: [0, 10, 13, 933, 936, 1556, ...]
 			for row in _csv:
 				if len(self.tubs)>0:
 					_czas_przejazdu = (row[0]-self.tubs[-1])*self.czasPrzejazduDzwigu
@@ -51,29 +44,18 @@ class GenerujZawieszke:
 					self.tubs.append( row[0] )
 				else: # Pierwsza wanna
 					self.tubs.append(row[0])
-					self.time.append(row[1]-self.czasPracyDzwigu)
+					self.time.append(row[1] - self.czasPracyDzwigu)
 					self.tubs.append(row[0])
 					self.time.append(row[1])
 
-			# for key, value in self.csv.items():
-			# 	print(key, '->', value)
-	
+
+	# Przesunięcie wszystkich czasów zawieszki o dany offset
 	def move_right(self, loffset):
 		for i in range(0, len(self.time)):
-			self.time[i] += loffset
+			self.time[i] += loffset	
 
-
-	def check_right(self, loffset):
-		tmp = []
-		for i in range(0, len(self.time)):
-			tmp.append(self.time[i] + loffset)
-		return tmp
-
-
-	def get_len(self):
-		return len(self.tubs)
-
-
+	# Funkcja tworzy słownik. Klucz to numer wanny. Dwa argumenty [czas startu, czas konca] pracy
+	# {1: [80, 90], 2: [93, 1013], 3: [1016, 1636], 4: [1639, 1719], ...}
 	def get_dict(self, lopt = ''):		
 		uniqe_tubs = list(sorted(set(self.tubs)))
 		dic = {}
@@ -115,6 +97,7 @@ class GenerujZawieszke:
 		return tmp
 
 
+	'''	
 	def get_tubs(self, lopt, lusun = False):
 		if lopt == 'A':
 			t = [tub for tub in self.tubs if tub <= 18]

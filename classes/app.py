@@ -3,46 +3,54 @@
 class App:
 
 	def __init__(self, _ltolerancja):
-		self.lista_zawieszek = []
-#		self.tolerancja = ltolerancja
+		self.lista = []
+		self.tolerancja = _ltolerancja
 #		self.allTubs = []
 #		self.allTime = []
 
-	'''
-	def liczba(self):
-		return len(self.lista)
-
-
-	def dodaj(self, lzawieszka):
-		self.lista.append(lzawieszka)
-		if self.liczba() > 1:
+	# Dodanie zawieszki do listy zawieszek
+	def dodaj(self, _lzawieszka):
+		self.lista.append(_lzawieszka)
+		if len(self.lista) > 1:
 			self.przesun()
 
+	def przesun(self):
+		# -------- Przesunięcie zaraz za ostatni wykres --------
+		offset = 0
+		if self.lista[-1].time[0] <= self.lista[-2].time[0]:
+			offset = (self.lista[-2].time[0] - self.lista[-1].time[0]) + self.tolerancja			
+		self.lista[-1].move_right(offset)		
+		
+		# -------- Przesunięcie wanny --------
+		offset = 0
+		_ostatni = self.lista[-1].get_dict()
+		_pierwsze = self.sumaPierwszychDict()
+		# _tubs_wspolne - Tworzy listę z numerami wanien, które są wspólne dla zawieszek istniejących
+		# [1, 2, 3, 4, 5, 6, 7, 8, 9, 14, 16, 17, ...]
+		_tubs_wspolne = sorted(set(_pierwsze).intersection(_ostatni))
 
-	def mergeDict(self, dict1, dict2):
-		dict3 = {**dict2, **dict1}
-		for key, value in dict3.items():
-			if key in dict1 and key in dict2:
-				dict3[key] = (value , dict2[key])
-		return dict3
+		for tub in _tubs_wspolne:
+			for val in _pierwsze[tub]:				
+				if self.overlap(_ostatni[tub], val):
+					offset = val[1] - _ostatni[tub][0]+1
+					self.lista[-1].move_right(offset+self.tolerancja)
+					_ostatni = self.lista[-1].get_dict()
+		
+		# -------- Przesunięcie przejazdu -------- 			
+		offsetA = 1
+		offsetB = 1
+		#self.lista[-1].move_right( int(self.lista[-1].przesuniecie) ) # Przesunięcie startu nowej zawieszki w zaleznosci od czasu, jaką już pracuje
+
+		while (offsetA > 0) or (offsetB > 0):
+			offsetA = self.checkCollisions('A')
+			self.lista[-1].move_right(offsetA)	
+			offsetB = self.checkCollisions('B')
+			self.lista[-1].move_right(offsetB)	
 
 
 	def overlap(self, _la, _lb):
 		return _la[1] >= _lb[0] and _lb[1] >= _la[0]
-
-
-	def sumaPierwszychDict(self):
-		di = {}
-		for key in range(1,37):
-			tmp = []
-			for i in self.lista[:-1]:
-				dic = i.get_dict()
-				if key in dic.keys():
-					tmp.append(dic[key])
-			if len(tmp)>0:
-				di[key] = tmp
-		return di
-
+	
 
 	def sumaPierwszychRect(self, lopt):
 		di = []
@@ -60,42 +68,9 @@ class App:
 				if self.overlap(x,y):
 					kolizje = y[1] - x[0]+3
 					break
-		return kolizje					
+		return kolizje		
 
-
-	def przesun(self):
-		# -------- Przesunięcie zaraz za ostatni wykres --------
-		offset = 0
-		if self.lista[-1].time[0] <= self.lista[-2].time[0]:
-			offset = (self.lista[-2].time[0] - self.lista[-1].time[0]) + self.tolerancja			
-		self.lista[-1].move_right(offset)		
-
-		# -------- Przesunięcie wanny --------
-		offset = 0
-		_ostatni = self.lista[-1].get_dict()
-		_pierwsze = self.sumaPierwszychDict()
-		_tubs_wspolne = sorted(set(_pierwsze).intersection(_ostatni))
-		print('wspolne')
-		print(_pierwsze)
-		for tub in _tubs_wspolne:
-			for val in _pierwsze[tub]:				
-				if self.overlap(_ostatni[tub], val):
-					offset = val[1] - _ostatni[tub][0]+1
-					self.lista[-1].move_right(offset+self.tolerancja)
-					_ostatni = self.lista[-1].get_dict()
-
-		# -------- Przesunięcie przejazdu -------- 			
-		offsetA = 1
-		offsetB = 1
-		self.lista[-1].move_right( int(self.lista[-1].przesuniecie) ) # Przesunięcie startu nowej zawieszki w zaleznosci od czasu, jaką już pracuje
-
-		while (offsetA > 0) or (offsetB > 0):
-			offsetA = self.checkCollisions('A')
-			self.lista[-1].move_right(offsetA)	
-			offsetB = self.checkCollisions('B')
-			self.lista[-1].move_right(offsetB)			
-
-
+	'''
 	def rysuj_sciezke(self, lopt):
 		plc = []
 		program = []
@@ -127,3 +102,17 @@ class App:
 
 		return program
 	'''
+
+	# Funkcja tworzy słownik zawierający sumę zakresów wszystkich zawieszek aktualnie wykonywanych
+	# {1: [[0, 10], [80, 90]], 2: [[13, 933], [93, 1013]], 3: [[936, 1556], [1016, 1636]], 4: [[1559, 1639], [1639, 1719]],...}
+	def sumaPierwszychDict(self):
+		di = {}
+		for key in range(1,37):
+			tmp = []
+			for i in self.lista[:-1]:
+				dic = i.get_dict()
+				if key in dic.keys():
+					tmp.append(dic[key])
+			if len(tmp)>0:
+				di[key] = tmp
+		return di

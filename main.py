@@ -26,15 +26,14 @@ def wypisz(_s7params, _listaPlikowCSV):
 	print('')
 
 
-'''
-
-def pri(zaw):
+def pri(zaw, u):
 	print('#-------------------------------------------------------')
-	_u = 1
-	print(f'tubs{_u} = {zaw.tubs}')
-	print(f'time{_u} = {zaw.time}')
-	print(f'rectA{_u} = {zaw.get_rect("A", tolerancja)}')
-	print(f'rectB{_u} = {zaw.get_rect("B", tolerancja)}')	
+	print(f'tubs{u} = {zaw.lista[-1].tubs}')
+	print(f'time{u} = {zaw.lista[-1].time}')
+	print(f'rectA{u} = {zaw.lista[-1].get_rect("A", tolerancja)}')
+	print(f'rectB{u} = {zaw.lista[-1].get_rect("B", tolerancja)}')	
+
+'''
 
 
 def generuj(_s7params):
@@ -97,8 +96,8 @@ def generuj(_listaPlikowCSV):
 	zawieszki = App(tolerancja)
 
 	for plikCSV in _listaPlikowCSV:
-		#zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', czas_pracy_dzwigu, czas_przejazdu_dzwigu) )
-		GenerujZawieszke(f'csv/{plikCSV}.csv', czas_pracy_dzwigu, czas_przejazdu_dzwigu)
+		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', czas_pracy_dzwigu, czas_przejazdu_dzwigu) )
+		pri(zawieszki, plikCSV)
 
 
 def main(argv):
@@ -107,7 +106,7 @@ def main(argv):
 
 		if (s7params.PLCready == 1):
 			listaPlikowCSV = loadCSV(s7params.dataczas)
-			generuj(listaPlikowCSV)
+			generuj(listaPlikowCSV)			
 		# 	if (s7params.check_if_empty()): # Jeśli sterownik nie wykonuje żadnego programu, tworzymy nowy program
 		# 		#generuj(s7params)
 		# 		pass
