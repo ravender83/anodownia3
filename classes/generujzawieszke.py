@@ -17,7 +17,7 @@ class GenerujZawieszke:
 
 			# Odczytanie numeru programu i czasu startu zawieszki
 			_rowt = next(_csv_reader)
-			self.czasStartu = datetime.strdtime(_rowt[0], '%d-%m-%Y %H:%M:%S')
+			self.czasStartu = datetime.strptime(_rowt[0], '%d-%m-%Y %H:%M:%S')
 
 	'''
 	def open(self, lpath):
