@@ -10,6 +10,7 @@ class GenerujZawieszke:
 		self.csv = {}
 		self.open(_lpath)
 
+
 	def open(self, _lpath):
 		_csv = []
 		with open(_lpath) as csv_file:
@@ -29,7 +30,7 @@ class GenerujZawieszke:
 				# 0: wanna, 1: czas pracy, 2: obciek, 3: powtorzenia [900,10,1]
 				self.csv[int(row[0])] = [int(row[1]), int(row[2]), int(row[3])]
 				# Korekcja czasu pracy o czas pracy dźwigu i ilość powtorzeń [1, 930]
-				_csv.append( [ int(row[0]), (int(row[1])+ self.czasPracyDzwigu +int(row[2]))*_tmp ] )
+				_csv.append( [ int(row[0]), (int(row[1])+ self.czasPracyDzwigu + int(row[2])) * _tmp ] )
 
 			# Generowanie listy tubes: [1, 1, 2, 2, 3, 3, 4, 4, ...]
 			# Generowanie listy times: [0, 10, 13, 933, 936, 1556, ...]

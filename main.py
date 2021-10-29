@@ -60,6 +60,17 @@ def generuj(_s7params):
 # aktualny czas sterownika PLC i zmienia jego nazwę na największy możliwy numer
 # return: list [1, 2, 5, 6, ...] - nazwy plików w folderze csv/
 #-------------------------------------------------------------------------
+
+def zapiszCzasCSV(_file, _time):
+	with open(f'csv/{_file}.csv', 'r', newline='') as f:
+		_lines = f.readlines()
+	f.close
+	_lines[0] = _time.strftime('%d-%m-%Y %H:%M:%S\r\n')
+	with open(f'csv/{_file}.csv', 'w', newline='') as f:			
+		f.writelines(_lines)
+	f.close
+
+
 def loadCSV(_actualTime):
 	_csvFiles = []
 	_maxNr = 0
@@ -81,6 +92,7 @@ def loadCSV(_actualTime):
 		f.close
 		os.rename('csv/new.csv', f'csv/{_maxNr+1}.csv')
 		_csvFiles.append( int(_maxNr+1) )
+		#_csvFiles.append( 'new' )
 	return sorted(_csvFiles)	
 
 
@@ -89,15 +101,19 @@ def generuj(_listaPlikowCSV):
 
 	for plikCSV in _listaPlikowCSV:
 		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', czas_pracy_dzwigu, czas_przejazdu_dzwigu) )
+		_offset = zawieszki.lista[-1].time[0] # Offset startu nowej zawieszki w sekundach
+		_czasstartu = zawieszki.lista[-1].czasStartu + datetime.timedelta(0, _offset )
+
 		pri(zawieszki, plikCSV)
 
+	'''
 	a = sorted(zawieszki.sumaWszystkichRect('A'))
 	print('====', a)
 	b = sorted(zawieszki.sumaWszystkichRect('B'))
 	print('====', b)
-
 	a1 = zawieszki.sumaWszystkichDict()
 	print('====', a1)
+	'''
 
 def main(argv):
 	if os.path.isfile('csv/new.csv'):		
