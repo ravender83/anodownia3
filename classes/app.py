@@ -10,15 +10,16 @@ class App:
 
 
 	# Dodanie zawieszki do listy zawieszek
-	def dodaj(self, _lzawieszka, _dataczas):
+	def dodaj(self, _lzawieszka):
+		_lzawieszka.move_right(_lzawieszka.offset)
 		self.lista.append(_lzawieszka)
 		if len(self.lista) > 1:
-			self.przesun(_dataczas)
+			self.przesun()
 
 
-	def przesun(self, _dataczas):
+	def przesun(self, offset=0):
 		# -------- Przesunięcie zaraz za ostatni wykres --------
-		offset =  int((_dataczas - self.lista[0].czasStartu).total_seconds())
+		#offset = 0 # int((_dataczas - self.lista[0].czasStartu).total_seconds())
 		if self.lista[-1].time[0] <= self.lista[-2].time[0]:
 			offset += (self.lista[-2].time[0] - self.lista[-1].time[0]) + self.tolerancja			
 		self.lista[-1].move_right(offset)		

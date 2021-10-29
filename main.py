@@ -51,8 +51,8 @@ def generuj(_s7params):
 	#print(B)	
 
 	s7plc = cQueue(A, B)
-
 '''
+
 
 #-------------------------------------------------------------------------
 # Funkcja szuka plików csv o nazwie liczbowej. Nazwę każdego znalezionego pliku zapisuje
@@ -60,7 +60,6 @@ def generuj(_s7params):
 # aktualny czas sterownika PLC i zmienia jego nazwę na największy możliwy numer
 # return: list [1, 2, 5, 6, ...] - nazwy plików w folderze csv/
 #-------------------------------------------------------------------------
-
 def zapiszCzasCSV(_file, _time):
 	with open(f'csv/{_file}.csv', 'r', newline='') as f:
 		_lines = f.readlines()
@@ -71,7 +70,7 @@ def zapiszCzasCSV(_file, _time):
 	f.close
 
 
-def loadCSV(_actualTime):
+def loadCSV():
 	_csvFiles = []
 	_maxNr = 0
 
@@ -83,39 +82,52 @@ def loadCSV(_actualTime):
 
 	# znaleziono nowy plik - ustawienie czasu PLC, zmiana nazwy
 	if os.path.isfile('csv/new.csv'):
-		zapiszCzasCSV('new', _actualTime)
 		os.rename('csv/new.csv', f'csv/{_maxNr+1}.csv')
 		_csvFiles.append( int(_maxNr+1) )
 		#_csvFiles.append( 'new' )
 	return sorted(_csvFiles)	
 
 
+def przesunPodczasRuchu(zawieszki, _dataczas):
+	_offset_nowej_zawieszki = zawieszki.lista[-1].time[0] # Offset startu nowej zawieszki w sekundach np. 2354
+	print('offset_nowej_zawieszki', _offset_nowej_zawieszki)
+	_czasstartu = zawieszki.lista[0].czasStartu # 2021-10-29 10:00:00
+	print('czas startu', _czasstartu)
+	_czasaktualny = _dataczas # 2021-10-29 11:00:00
+	print('_czasaktualny', _czasaktualny)
+	_roznica_start_aktualna = int((_czasaktualny - _czasstartu).total_seconds()) # 3600
+	print('roznica [s]', _roznica_start_aktualna)
+	_nowy_offset = _roznica_start_aktualna - _offset_nowej_zawieszki # 752
+	print('_nowy_offset ', _nowy_offset)
+	if _nowy_offset > -tolerancja:
+		print('_nowy_offset ', _nowy_offset+tolerancja)
+		zawieszki.przesun(_nowy_offset)
+
+
 def generuj(_listaPlikowCSV, _dataczas):
 	zawieszki = App(tolerancja)
 
 	for plikCSV in _listaPlikowCSV:
-		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', czas_pracy_dzwigu, czas_przejazdu_dzwigu), _dataczas)
+		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', plikCSV ,czas_pracy_dzwigu, czas_przejazdu_dzwigu))
+		zawieszki.lista[-1].offset = zawieszki.lista[-1].time[0]
+		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].offset)
+		#print('DDDDD', zawieszki.lista[-1].offset)
+		#przesunPodczasRuchu(zawieszki, _dataczas)
 		pri(zawieszki, plikCSV)
 
-	#_offset = zawieszki.lista[-1].time[0] # Offset startu nowej zawieszki w sekundach np. 2354
-	#_czasstartu = zawieszki.lista[0].czasStartu + datetime.timedelta(0, _offset ) # Czas realny powiększony o offset
-	#zapiszCzasCSV(plikCSV, _czasstartu)
 
-	'''
-	a = sorted(zawieszki.sumaWszystkichRect('A'))
-	print('====', a)cl
-	b = sorted(zawieszki.sumaWszystkichRect('B'))
-	print('====', b)
-	a1 = zawieszki.sumaWszystkichDict()
-	print('====', a1)
-	'''
+	# _czasstartu = zawieszki.lista[0].czasStartu + datetime.timedelta(0, zawieszki.lista[-1].time[0] ) # Czas realny powiększony o offset
+	# print(_czasstartu)
+	# print(zawieszki.lista[-1].name)
+	# zapiszCzasCSV(zawieszki.lista[-1].name, _czasstartu)
+
 
 def main(argv):
 	if os.path.isfile('csv/new.csv'):		
 		s7params = cPlcParams() #TODO: dodać wyjątek, jeśli nie pobrano parametrów
 
 		if (s7params.PLCready == 1):
-			listaPlikowCSV = loadCSV(s7params.dataczas)
+			listaPlikowCSV = loadCSV()
 			generuj(listaPlikowCSV, s7params.dataczas)						
 		else:
 			print('Sterownik PLC nie jest gotowy do pracy...')

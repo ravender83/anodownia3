@@ -2,14 +2,16 @@ import csv
 from datetime import datetime
 
 class GenerujZawieszke:
-	def __init__(self, _lpath, _lczasPracyDzwigu, _lczasPrzejazduDzwigu):
+	def __init__(self, _lpath, lname, _lczasPracyDzwigu, _lczasPrzejazduDzwigu):
 		self.tubs = []
 		self.time = []
+		self.name = str(lname)
 		self.czasPracyDzwigu = _lczasPracyDzwigu
 		self.czasPrzejazduDzwigu = _lczasPrzejazduDzwigu
 		self.csv = {}
+		self.offset = 0
 		self.open(_lpath)
-
+		
 
 	def open(self, _lpath):
 		_csv = []
@@ -18,8 +20,8 @@ class GenerujZawieszke:
 
 			# Odczytanie numeru programu i czasu startu zawieszki
 			_rowt = next(_csv_reader)
-			self.czasStartu = datetime.strptime(_rowt[0], '%d-%m-%Y %H:%M:%S')
-
+			self.offset = int(_rowt[1])
+			self.czasStartu = datetime.strptime(_rowt[0], '%d-%m-%Y %H:%M:%S')			
 			# Jeśli ilosc powtorzeń wynosi zero, to ustaw jeden
 			for row in _csv_reader:
 				if (int(row[3]) == 0):
@@ -52,6 +54,7 @@ class GenerujZawieszke:
 	def move_right(self, loffset):
 		for i in range(0, len(self.time)):
 			self.time[i] += loffset	
+
 
 	# Funkcja tworzy słownik. Klucz to numer wanny. Dwa argumenty [czas startu, czas konca] pracy
 	# {1: [80, 90], 2: [93, 1013], 3: [1016, 1636], 4: [1639, 1719], ...}
