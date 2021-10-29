@@ -18,14 +18,6 @@ czas_przejazdu_dzwigu = 3 # czas przejazdu dzwigu nad jedna wanna
 tolerancja = 70 + czas_pracy_dzwigu #ruchy dzwigu ponizej tej wartosci beda laczone razem
 
 
-def wypisz(_s7params, _listaPlikowCSV):
-	print('')
-	print('s7params.dataczas: ', _s7params.dataczas)
-	print('s7params.PLCready: ', _s7params.PLCready)
-	print('listaPlikowCSV: ', _listaPlikowCSV)
-	print('')
-
-
 def pri(zaw, u):
 	print('#-------------------------------------------------------')
 	print(f'tubs{u} = {zaw.lista[-1].tubs}')
@@ -99,6 +91,13 @@ def generuj(_listaPlikowCSV):
 		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', czas_pracy_dzwigu, czas_przejazdu_dzwigu) )
 		pri(zawieszki, plikCSV)
 
+	a = sorted(zawieszki.sumaWszystkichRect('A'))
+	print('====', a)
+	b = sorted(zawieszki.sumaWszystkichRect('B'))
+	print('====', b)
+
+	a1 = zawieszki.sumaWszystkichDict()
+	print('====', a1)
 
 def main(argv):
 	if os.path.isfile('csv/new.csv'):		
@@ -106,16 +105,10 @@ def main(argv):
 
 		if (s7params.PLCready == 1):
 			listaPlikowCSV = loadCSV(s7params.dataczas)
-			generuj(listaPlikowCSV)			
-		# 	if (s7params.check_if_empty()): # Jeśli sterownik nie wykonuje żadnego programu, tworzymy nowy program
-		# 		#generuj(s7params)
-		# 		pass
-		# 	else: # Jeśli sterownik wykonuje program, dopisujemy nowe rozkazy
-			pass
+			generuj(listaPlikowCSV)						
 		else:
 			print('Sterownik PLC nie jest gotowy do pracy...')
 		
-		wypisz(s7params, listaPlikowCSV)
 	else:
 		print('Nie odnaleziono pliku prog/new.csv')
 

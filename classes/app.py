@@ -24,6 +24,7 @@ class App:
 		# -------- Przesunięcie wanny --------
 		offset = 0
 		_ostatni = self.lista[-1].get_dict()
+		# {1: [[0, 10], [2928, 2938]], 2: [[13, 933], [2941, 3861]], ...}
 		_pierwsze = self.sumaPierwszychDict()
 		# _tubs_wspolne - Tworzy listę z numerami wanien, które są wspólne dla zawieszek istniejących
 		# [1, 2, 3, 4, 5, 6, 7, 8, 9, 14, 16, 17, ...]
@@ -55,6 +56,13 @@ class App:
 	def sumaPierwszychRect(self, lopt):
 		di = []
 		for i in self.lista[:-1]:
+			di += (i.get_rect(lopt, self.tolerancja))
+		return di
+
+
+	def sumaWszystkichRect(self, lopt):
+		di = []
+		for i in self.lista:
 			di += (i.get_rect(lopt, self.tolerancja))
 		return di
 
@@ -116,3 +124,15 @@ class App:
 			if len(tmp)>0:
 				di[key] = tmp
 		return di
+
+	def sumaWszystkichDict(self):
+		di = {}
+		for key in range(1,37):
+			tmp = []
+			for i in self.lista:
+				dic = i.get_dict()
+				if key in dic.keys():
+					tmp.append(dic[key])
+			if len(tmp)>0:
+				di[key] = tmp
+		return di		
