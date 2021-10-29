@@ -8,17 +8,19 @@ class App:
 #		self.allTubs = []
 #		self.allTime = []
 
+
 	# Dodanie zawieszki do listy zawieszek
-	def dodaj(self, _lzawieszka):
+	def dodaj(self, _lzawieszka, _dataczas):
 		self.lista.append(_lzawieszka)
 		if len(self.lista) > 1:
-			self.przesun()
+			self.przesun(_dataczas)
 
-	def przesun(self):
+
+	def przesun(self, _dataczas):
 		# -------- Przesunięcie zaraz za ostatni wykres --------
-		offset = 0
+		offset =  int((_dataczas - self.lista[0].czasStartu).total_seconds())
 		if self.lista[-1].time[0] <= self.lista[-2].time[0]:
-			offset = (self.lista[-2].time[0] - self.lista[-1].time[0]) + self.tolerancja			
+			offset += (self.lista[-2].time[0] - self.lista[-1].time[0]) + self.tolerancja			
 		self.lista[-1].move_right(offset)		
 		
 		# -------- Przesunięcie wanny --------

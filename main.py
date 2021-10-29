@@ -83,32 +83,27 @@ def loadCSV(_actualTime):
 
 	# znaleziono nowy plik - ustawienie czasu PLC, zmiana nazwy
 	if os.path.isfile('csv/new.csv'):
-		with open('csv/new.csv', 'r', newline='') as f:
-			_lines = f.readlines()
-		f.close
-		_lines[0] = _actualTime.strftime('%d-%m-%Y %H:%M:%S\r\n')
-		with open('csv/new.csv', 'w', newline='') as f:			
-			f.writelines(_lines)
-		f.close
+		zapiszCzasCSV('new', _actualTime)
 		os.rename('csv/new.csv', f'csv/{_maxNr+1}.csv')
 		_csvFiles.append( int(_maxNr+1) )
 		#_csvFiles.append( 'new' )
 	return sorted(_csvFiles)	
 
 
-def generuj(_listaPlikowCSV):
+def generuj(_listaPlikowCSV, _dataczas):
 	zawieszki = App(tolerancja)
 
 	for plikCSV in _listaPlikowCSV:
-		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', czas_pracy_dzwigu, czas_przejazdu_dzwigu) )
-		_offset = zawieszki.lista[-1].time[0] # Offset startu nowej zawieszki w sekundach
-		_czasstartu = zawieszki.lista[-1].czasStartu + datetime.timedelta(0, _offset )
-
+		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', czas_pracy_dzwigu, czas_przejazdu_dzwigu), _dataczas)
 		pri(zawieszki, plikCSV)
+
+	#_offset = zawieszki.lista[-1].time[0] # Offset startu nowej zawieszki w sekundach np. 2354
+	#_czasstartu = zawieszki.lista[0].czasStartu + datetime.timedelta(0, _offset ) # Czas realny powiększony o offset
+	#zapiszCzasCSV(plikCSV, _czasstartu)
 
 	'''
 	a = sorted(zawieszki.sumaWszystkichRect('A'))
-	print('====', a)
+	print('====', a)cl
 	b = sorted(zawieszki.sumaWszystkichRect('B'))
 	print('====', b)
 	a1 = zawieszki.sumaWszystkichDict()
@@ -121,14 +116,12 @@ def main(argv):
 
 		if (s7params.PLCready == 1):
 			listaPlikowCSV = loadCSV(s7params.dataczas)
-			generuj(listaPlikowCSV)						
+			generuj(listaPlikowCSV, s7params.dataczas)						
 		else:
 			print('Sterownik PLC nie jest gotowy do pracy...')
 		
 	else:
 		print('Nie odnaleziono pliku prog/new.csv')
-
-	
 
 
 if __name__ == "__main__":
