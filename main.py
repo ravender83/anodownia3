@@ -88,22 +88,6 @@ def loadCSV():
 	return sorted(_csvFiles)	
 
 
-def przesunPodczasRuchu(zawieszki, _dataczas):
-	_offset_nowej_zawieszki = zawieszki.lista[-1].time[0] # Offset startu nowej zawieszki w sekundach np. 2354
-	print('offset_nowej_zawieszki', _offset_nowej_zawieszki)
-	_czasstartu = zawieszki.lista[0].czasStartu # 2021-10-29 10:00:00
-	print('czas startu', _czasstartu)
-	_czasaktualny = _dataczas # 2021-10-29 11:00:00
-	print('_czasaktualny', _czasaktualny)
-	_roznica_start_aktualna = int((_czasaktualny - _czasstartu).total_seconds()) # 3600
-	print('roznica [s]', _roznica_start_aktualna)
-	_nowy_offset = _roznica_start_aktualna - _offset_nowej_zawieszki # 752
-	print('_nowy_offset ', _nowy_offset)
-	if _nowy_offset > -tolerancja:
-		print('_nowy_offset ', _nowy_offset+tolerancja)
-		zawieszki.przesun(_nowy_offset)
-
-
 def generuj(_listaPlikowCSV, _dataczas):
 	zawieszki = App(tolerancja)
 
