@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timedelta
 
 class App:
 
@@ -9,6 +10,11 @@ class App:
 #		self.allTime = []
 
 
+	def dodajsekundy(self, _czas, _sek):
+		_b = _czas + timedelta(0,_sek)
+		return _b
+
+
 	# Dodanie zawieszki do listy zawieszek
 	def dodaj(self, _lzawieszka):
 		self.lista.append(_lzawieszka)		
@@ -16,7 +22,8 @@ class App:
 			if (self.lista[-1].offset == -1):
 				_roznica = (self.lista[-1].czasStartu - self.lista[0].czasStartu).total_seconds()
 				self.przesun(_roznica)
-				self.lista[-1].offset = self.lista[-1].time[0]
+				self.lista[-1].offset = int(self.lista[-1].time[0])
+				self.lista[-1].czasStartu = self.dodajsekundy(self.lista[0].czasStartu, int(self.lista[-1].offset))
 			else:
 				self.lista[-1].move_right(self.lista[-1].offset)
 		else:
@@ -37,9 +44,9 @@ class App:
 	def przesun(self, offset=0):
 		# -------- Przesunięcie zaraz za ostatni wykres --------
 		#offset = 0 # int((_dataczas - self.lista[0].czasStartu).total_seconds())
-		if self.lista[-1].time[0] <= self.lista[-2].time[0]:
-			offset += (self.lista[-2].time[0] - self.lista[-1].time[0]) + self.tolerancja			
-		self.lista[-1].move_right(offset)		
+		#if self.lista[-1].time[0] <= self.lista[-2].time[0]:
+		#	offset += (self.lista[-2].time[0] - self.lista[-1].time[0]) + self.tolerancja			
+		self.lista[-1].move_right(offset+self.tolerancja)		
 		
 		# -------- Przesunięcie wanny --------
 		offset = 0
