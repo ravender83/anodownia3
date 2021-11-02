@@ -64,7 +64,9 @@ def zapiszCzasCSV(_file, _time):
 	with open(f'csv/{_file}.csv', 'r', newline='') as f:
 		_lines = f.readlines()
 	f.close
-	_lines[0] = _time.strftime('%d-%m-%Y %H:%M:%S\r\n')
+	_line = _lines[0].split(',')
+	_lines[0] = f'{_line[0]}, {_time}\r\n'
+	#_lines[0] = _time.strftime('%d-%m-%Y %H:%M:%S\r\n')
 	with open(f'csv/{_file}.csv', 'w', newline='') as f:			
 		f.writelines(_lines)
 	f.close

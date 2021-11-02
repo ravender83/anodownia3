@@ -11,7 +11,10 @@ class App:
 
 	# Dodanie zawieszki do listy zawieszek
 	def dodaj(self, _lzawieszka):
-		_lzawieszka.move_right(_lzawieszka.offset)
+		if _lzawieszka.offset < 0:
+			_lzawieszka.offset = 0
+		else:
+			_lzawieszka.move_right(_lzawieszka.offset)		
 		self.lista.append(_lzawieszka)
 		if len(self.lista) > 1:
 			self.przesun()

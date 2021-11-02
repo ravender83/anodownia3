@@ -9,7 +9,6 @@ class GenerujZawieszke:
 		self.czasPracyDzwigu = _lczasPracyDzwigu
 		self.czasPrzejazduDzwigu = _lczasPrzejazduDzwigu
 		self.csv = {}
-		self.offset = 0
 		self.open(_lpath)
 		
 
