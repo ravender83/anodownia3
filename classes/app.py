@@ -6,8 +6,6 @@ class App:
 	def __init__(self, _ltolerancja):
 		self.lista = []
 		self.tolerancja = _ltolerancja
-#		self.allTubs = []
-#		self.allTime = []
 
 
 	def dodajsekundy(self, _czas, _sek):
@@ -30,22 +28,8 @@ class App:
 			self.lista[-1].offset = 0
 		
 
-		'''
-		if _lzawieszka.offset < 0:
-			_lzawieszka.offset = 0
-		else:
-			_lzawieszka.move_right(_lzawieszka.offset)		
-		self.lista.append(_lzawieszka)
-		if len(self.lista) > 1:
-			self.przesun()
-		'''
-
-
 	def przesun(self, offset=0):
 		# -------- Przesunięcie zaraz za ostatni wykres --------
-		#offset = 0 # int((_dataczas - self.lista[0].czasStartu).total_seconds())
-		#if self.lista[-1].time[0] <= self.lista[-2].time[0]:
-		#	offset += (self.lista[-2].time[0] - self.lista[-1].time[0]) + self.tolerancja			
 		self.lista[-1].move_right(offset+self.tolerancja)		
 		
 		# -------- Przesunięcie wanny --------
@@ -67,7 +51,6 @@ class App:
 		# -------- Przesunięcie przejazdu -------- 			
 		offsetA = 1
 		offsetB = 1
-		#self.lista[-1].move_right( int(self.lista[-1].przesuniecie) ) # Przesunięcie startu nowej zawieszki w zaleznosci od czasu, jaką już pracuje
 
 		while (offsetA > 0) or (offsetB > 0):
 			offsetA = self.checkCollisions('A')

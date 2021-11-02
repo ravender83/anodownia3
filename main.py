@@ -84,7 +84,6 @@ def loadCSV():
 	if os.path.isfile('csv/new.csv'):
 		os.rename('csv/new.csv', f'csv/{_maxNr+1}.csv')
 		_csvFiles.append( int(_maxNr+1) )
-		#_csvFiles.append( 'new' )
 	return sorted(_csvFiles)	
 
 
@@ -94,19 +93,7 @@ def generuj(_listaPlikowCSV, _dataczas):
 	for plikCSV in _listaPlikowCSV:
 		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', plikCSV ,czas_pracy_dzwigu, czas_przejazdu_dzwigu, _dataczas))
 		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].czasStartu, zawieszki.lista[-1].offset)
-
-		# zawieszki.lista[-1].offset = zawieszki.lista[-1].time[0]
-		# zapiszCzasCSV(plikCSV, zawieszki.lista[-1].offset)
-
-		#print('DDDDD', zawieszki.lista[-1].offset)
-		#przesunPodczasRuchu(zawieszki, _dataczas)
 		pri(zawieszki, plikCSV)
-
-
-	# _czasstartu = zawieszki.lista[0].czasStartu + datetime.timedelta(0, zawieszki.lista[-1].time[0] ) # Czas realny powiększony o offset
-	# print(_czasstartu)
-	# print(zawieszki.lista[-1].name)
-	# zapiszCzasCSV(zawieszki.lista[-1].name, _czasstartu)
 
 
 def main(argv):

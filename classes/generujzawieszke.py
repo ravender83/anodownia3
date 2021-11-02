@@ -103,16 +103,3 @@ class GenerujZawieszke:
 		if lopt == 'B':
 			tmp.pop()
 		return tmp
-
-
-	'''	
-	def get_tubs(self, lopt, lusun = False):
-		if lopt == 'A':
-			t = [tub for tub in self.tubs if tub <= 18]
-		if lopt == 'B':
-			t = [tub for tub in self.tubs if tub >= 19]
-		if lusun == True:
-			if t[-1] == t[-2]:
-				t.pop()
-		return t
-	'''
