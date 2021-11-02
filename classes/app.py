@@ -11,6 +11,19 @@ class App:
 
 	# Dodanie zawieszki do listy zawieszek
 	def dodaj(self, _lzawieszka):
+		self.lista.append(_lzawieszka)		
+		if len(self.lista) > 1:
+			if (self.lista[-1].offset == -1):
+				_roznica = (self.lista[-1].czasStartu - self.lista[0].czasStartu).total_seconds()
+				self.przesun(_roznica)
+				self.lista[-1].offset = self.lista[-1].time[0]
+			else:
+				self.lista[-1].move_right(self.lista[-1].offset)
+		else:
+			self.lista[-1].offset = 0
+		
+
+		'''
 		if _lzawieszka.offset < 0:
 			_lzawieszka.offset = 0
 		else:
@@ -18,6 +31,7 @@ class App:
 		self.lista.append(_lzawieszka)
 		if len(self.lista) > 1:
 			self.przesun()
+		'''
 
 
 	def przesun(self, offset=0):

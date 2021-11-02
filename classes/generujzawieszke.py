@@ -2,17 +2,19 @@ import csv
 from datetime import datetime
 
 class GenerujZawieszke:
-	def __init__(self, _lpath, lname, _lczasPracyDzwigu, _lczasPrzejazduDzwigu):
+	def __init__(self, _lpath, lname, _lczasPracyDzwigu, _lczasPrzejazduDzwigu, _dataczas):
 		self.tubs = []
 		self.time = []
 		self.name = str(lname)
 		self.czasPracyDzwigu = _lczasPracyDzwigu
 		self.czasPrzejazduDzwigu = _lczasPrzejazduDzwigu
 		self.csv = {}
-		self.open(_lpath)
+		self.czasStartu = _dataczas
+
+		self.open(_lpath, _dataczas)
 		
 
-	def open(self, _lpath):
+	def open(self, _lpath, _dataczas):
 		_csv = []
 		with open(_lpath) as csv_file:
 			_csv_reader = csv.reader(csv_file, delimiter=',')
@@ -20,7 +22,12 @@ class GenerujZawieszke:
 			# Odczytanie numeru programu i czasu startu zawieszki
 			_rowt = next(_csv_reader)
 			self.offset = int(_rowt[1])
-			self.czasStartu = datetime.strptime(_rowt[0], '%d-%m-%Y %H:%M:%S')			
+
+			if self.offset == -1:
+				self.czasStartu = _dataczas
+			else:
+				self.czasStartu = datetime.strptime(_rowt[0], '%Y-%m-%d %H:%M:%S')		
+
 			# Jeśli ilosc powtorzeń wynosi zero, to ustaw jeden
 			for row in _csv_reader:
 				if (int(row[3]) == 0):

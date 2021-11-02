@@ -60,13 +60,11 @@ def generuj(_s7params):
 # aktualny czas sterownika PLC i zmienia jego nazwę na największy możliwy numer
 # return: list [1, 2, 5, 6, ...] - nazwy plików w folderze csv/
 #-------------------------------------------------------------------------
-def zapiszCzasCSV(_file, _time):
+def zapiszCzasCSV(_file, _dataczas, _offset):
 	with open(f'csv/{_file}.csv', 'r', newline='') as f:
 		_lines = f.readlines()
 	f.close
-	_line = _lines[0].split(',')
-	_lines[0] = f'{_line[0]}, {_time}\r\n'
-	#_lines[0] = _time.strftime('%d-%m-%Y %H:%M:%S\r\n')
+	_lines[0] = f'{_dataczas}, {_offset}\r\n'
 	with open(f'csv/{_file}.csv', 'w', newline='') as f:			
 		f.writelines(_lines)
 	f.close
@@ -110,9 +108,12 @@ def generuj(_listaPlikowCSV, _dataczas):
 	zawieszki = App(tolerancja)
 
 	for plikCSV in _listaPlikowCSV:
-		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', plikCSV ,czas_pracy_dzwigu, czas_przejazdu_dzwigu))
-		zawieszki.lista[-1].offset = zawieszki.lista[-1].time[0]
-		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].offset)
+		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', plikCSV ,czas_pracy_dzwigu, czas_przejazdu_dzwigu, _dataczas))
+		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].czasStartu, zawieszki.lista[-1].offset)
+
+		# zawieszki.lista[-1].offset = zawieszki.lista[-1].time[0]
+		# zapiszCzasCSV(plikCSV, zawieszki.lista[-1].offset)
+
 		#print('DDDDD', zawieszki.lista[-1].offset)
 		#przesunPodczasRuchu(zawieszki, _dataczas)
 		pri(zawieszki, plikCSV)
