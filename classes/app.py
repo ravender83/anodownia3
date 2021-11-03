@@ -100,8 +100,20 @@ class App:
 			for key2, val2 in _zawieszka.get_dict(lopt).items():
 				if (key2==1) or (key2==19):
 					_str = 'pobierz'
+					_TXyear = _zawieszka.czasStartu.year
+					_TXmonth = _zawieszka.czasStartu.month
+					_TXday = _zawieszka.czasStartu.day
+					_TXhour = _zawieszka.czasStartu.hour
+					_TXminute = _zawieszka.czasStartu.minute
+					_TXsecond = _zawieszka.czasStartu.second		
 				else:
 					_str = 'umiesc'
+					_TXyear = 1970
+					_TXmonth = 1
+					_TXday = 1
+					_TXhour = 0
+					_TXminute = 0
+					_TXsecond = 0
 
 				_TXstart = int(val2[0])
 				_TXkoniec = int(val2[1])
@@ -111,48 +123,16 @@ class App:
 				_TXpraca = _zawieszka.csv[key2][0]
 				_TXobciek = _zawieszka.csv[key2][1]
 				_TXpowtorzenia = _zawieszka.csv[key2][2]
-
-				plc.append([ _TXstart, _TXwanna, _TXname, _TXoperacja, _TXpraca, _TXobciek, _TXpowtorzenia ])
+				
+				plc.append([ _TXstart, _TXwanna, _TXname, _TXoperacja, _TXpraca, _TXobciek, _TXpowtorzenia, _TXyear, _TXmonth, _TXday, _TXhour, _TXminute, _TXsecond ])
 
 				if key2!=1 and key2!=18 and key2!=19 and key2!=36:
-					plc.append([ _TXkoniec, _TXwanna, _TXname, 'wyjmij', 0, 0, 0])
+					plc.append([ _TXkoniec, _TXwanna, _TXname, 'wyjmij', 0, 0, 0, 1970, 1, 1, 0, 0, 0])
 		plc = sorted(plc, key=itemgetter(0))
 
 		program = list(plc)
 		return program
 
-	'''
-	def rysuj_sciezke(self, lopt):
-		plc = []
-		program = []
-
-		for k, i in enumerate(self.lista):
-			for key, val in i.get_dict(lopt).items():
-				if (key==1) or (key==19):
-					str = 'pobierz'
-				else:
-					str = 'wsadz'
-				plc.append([key, val[0], i.nazwa, str, i.csv[key][0], i.csv[key][1], i.csv[key][2] ])
-				
-				if key!=1 and key!=18 and key!=19 and key!=36:
-					plc.append([key, val[1], i.nazwa, 'wyjmij', 0, 0, 0])
-		plc = sorted(plc, key=itemgetter(1))
-
-		program = list(plc)
-		plc = list(zip(*plc))
-		plc = [list(plc[0]), list(plc[1])]
-
-		self.allTubs = list(plc[0])
-		self.allTime = list(plc[1])
-		
-		if lopt == 'A':
-			self.allTubs.append(1)
-		if lopt == 'B':
-			self.allTubs.append(19)
-		self.allTime.append(self.allTime[-1] + ((self.allTubs[-2]-self.allTubs[-1])*3))	
-
-		return program
-	'''
 
 	# Funkcja tworzy słownik zawierający sumę zakresów wszystkich zawieszek aktualnie wykonywanych
 	# {1: [[0, 10], [80, 90]], 2: [[13, 933], [93, 1013]], 3: [[936, 1556], [1016, 1636]], 4: [[1559, 1639], [1639, 1719]],...}
@@ -167,6 +147,7 @@ class App:
 			if len(tmp)>0:
 				di[key] = tmp
 		return di
+
 
 	def sumaWszystkichDict(self):
 		di = {}

@@ -7,7 +7,6 @@ import struct
 class cProgram:
     def __init__(self, int1, dint1, int2, str1, int3, int4, int5):
         self.wanna = int1 #0
-        self.offset = dint1 #2
         self.zawieszka = int2 #6
         self.operacja = str1 #8
         self.tpraca = int3 #20
@@ -29,50 +28,50 @@ class cProgram:
 class cQueue:
     def __init__(self, _trackA, _trackB): 
         self.listProgram = []
-        self.cProgramLen = 34 #from PLC
-        self.listProgramAStart = 2 #from PLC
-        self.listProgramBStart = 6124 #from PLC
-        self.listProgramDB = 3 #from PLC     
+        self.cProgramLen = 34 #from PLC - dlugosc cProgram
+        self.listProgramAStart = 2 #from PLC TXRX A_krok
+        self.listProgramBStart = 6124 #from PLC TXRX B_krok
+        self.listProgramDB = 1 #from PLC TXRX     
 
         con = c.Client()
         res = con.connect('10.10.10.13', 0, 1)
 
         _trackAbytes = bytearray()
         for i in _trackA:
-            _a = i[0].to_bytes(2, byteorder='big') # wanna
-            _y0 = i[1].to_bytes(2, byteorder='big') # rok
-            _y1 = i[2].to_bytes(1, 'big') # miesiac
-            _y2 = i[3].to_bytes(1, 'big') # dzien
+            _a = i[1].to_bytes(2, byteorder='big') # wanna
+            _y0 = i[7].to_bytes(2, byteorder='big') # rok
+            _y1 = i[8].to_bytes(1, 'big') # miesiac
+            _y2 = i[9].to_bytes(1, 'big') # dzien
             _y3 = (0).to_bytes(1, 'big') # weekday
-            _y4 = i[4].to_bytes(1, 'big') # godzina
-            _y5 = i[5].to_bytes(1, 'big') # minuta
-            _y6 = i[6].to_bytes(1, 'big') # sekunda
+            _y4 = i[10].to_bytes(1, 'big') # godzina
+            _y5 = i[11].to_bytes(1, 'big') # minuta
+            _y6 = i[12].to_bytes(1, 'big') # sekunda
             _y7 = (0).to_bytes(4, 'big') # ms
-            _b = i[7].to_bytes(2, 'big') # zawieszka
+            _b = i[2].to_bytes(2, 'big') # zawieszka
             _c = (10).to_bytes(1, 'big') # ...empty...
-            _d = i[8].ljust(10).encode()
-            _e = i[9].to_bytes(2, 'big')
-            _f = i[10].to_bytes(2, 'big')
-            _g = i[11].to_bytes(2, 'big')
+            _d = i[3].ljust(10).encode()
+            _e = i[4].to_bytes(2, 'big')
+            _f = i[5].to_bytes(2, 'big')
+            _g = i[6].to_bytes(2, 'big')
             _trackAbytes.extend(_a+ _y0+_y1+_y2+_y3+_y4+_y5+_y6+_y7+ _b+ _c + _c + _d+ _e+ _f+ _g)
 
         _trackBbytes = bytearray()
         for i in _trackB:
-            _a = i[0].to_bytes(2, byteorder='big') # wanna
-            _y0 = i[1].to_bytes(2, byteorder='big') # rok
-            _y1 = i[2].to_bytes(1, 'big') # miesiac
-            _y2 = i[3].to_bytes(1, 'big') # dzien
+            _a = i[1].to_bytes(2, byteorder='big') # wanna
+            _y0 = i[7].to_bytes(2, byteorder='big') # rok
+            _y1 = i[8].to_bytes(1, 'big') # miesiac
+            _y2 = i[9].to_bytes(1, 'big') # dzien
             _y3 = (0).to_bytes(1, 'big') # weekday
-            _y4 = i[4].to_bytes(1, 'big') # godzina
-            _y5 = i[5].to_bytes(1, 'big') # minuta
-            _y6 = i[6].to_bytes(1, 'big') # sekunda
+            _y4 = i[10].to_bytes(1, 'big') # godzina
+            _y5 = i[11].to_bytes(1, 'big') # minuta
+            _y6 = i[12].to_bytes(1, 'big') # sekunda
             _y7 = (0).to_bytes(4, 'big') # ms
-            _b = i[7].to_bytes(2, 'big') # zawieszka
+            _b = i[2].to_bytes(2, 'big') # zawieszka
             _c = (10).to_bytes(1, 'big') # ...empty...
-            _d = i[8].ljust(10).encode()
-            _e = i[9].to_bytes(2, 'big')
-            _f = i[10].to_bytes(2, 'big')
-            _g = i[11].to_bytes(2, 'big')
+            _d = i[3].ljust(10).encode()
+            _e = i[4].to_bytes(2, 'big')
+            _f = i[5].to_bytes(2, 'big')
+            _g = i[6].to_bytes(2, 'big')
             _trackBbytes.extend(_a+ _y0+_y1+_y2+_y3+_y4+_y5+_y6+_y7+ _b+ _c + _c + _d+ _e+ _f+ _g)
 
         con.write_area(Areas['DB'], self.listProgramDB, self.listProgramAStart, _trackAbytes)
@@ -88,7 +87,7 @@ class cQueue:
 #-------------------------------------------------------------------------
 class cPlcParams:
     def __init__(self): 
-        _listProgramStart = 0 #from PLC TXRX.cPlcParams
+        _listProgramStart = 12244 #from PLC TXRX.cPlcParams
         _listProgramDB = 1 #from PLC TXRX
 
         con = c.Client()

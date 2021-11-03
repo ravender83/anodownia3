@@ -113,14 +113,16 @@ def generuj(_listaPlikowCSV, _dataczas):
 		write = csv.writer(f)
 		write.writerows(A)
 	f.close
-	#print(A)
+	print(A)
 	# -------------------------- B ----------------------------
-	A = zawieszki.generuj_sciezke('B')
+	B = zawieszki.generuj_sciezke('B')
 	with open('csv/B.csv', 'w', newline='') as f:
 		write = csv.writer(f)
-		write.writerows(A)
+		write.writerows(B)
 	f.close
-	#print(B)	
+	print(B)
+	s7plc = cQueue(A, B)	
+
 
 
 def main(argv):
