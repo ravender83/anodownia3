@@ -127,7 +127,7 @@ class App:
 				plc.append([ _TXstart, _TXwanna, _TXname, _TXoperacja, _TXpraca, _TXobciek, _TXpowtorzenia, _TXyear, _TXmonth, _TXday, _TXhour, _TXminute, _TXsecond ])
 
 				if key2!=1 and key2!=18 and key2!=19 and key2!=36:
-					plc.append([ _TXkoniec, _TXwanna, _TXname, 'wyjmij', 0, 0, 0, 1970, 1, 1, 0, 0, 0])
+					plc.append([ _TXkoniec, _TXwanna, _TXname, 'wyjmij', 0, _TXobciek, _TXpowtorzenia, 1970, 1, 1, 0, 0, 0])
 		plc = sorted(plc, key=itemgetter(0))
 
 		program = list(plc)

@@ -3,7 +3,7 @@ from snap7.util import *
 from snap7.types import *
 import datetime
 import struct
-
+'''
 class cProgram:
     def __init__(self, int1, dint1, int2, str1, int3, int4, int5):
         self.wanna = int1 #0
@@ -23,14 +23,14 @@ class cProgram:
         _f = self.tobciek.to_bytes(2, 'big')
         _g = self.tpowtorzenia.to_bytes(2, 'big')
         return _a+_b+ _c+ _c1 + _c1 + _d+ _e+ _f+ _g  
-
+'''
 
 class cQueue:
     def __init__(self, _trackA, _trackB): 
         self.listProgram = []
-        self.cProgramLen = 34 #from PLC - dlugosc cProgram
+        self.cProgramLen = 38 #from PLC - dlugosc cProgram
         self.listProgramAStart = 2 #from PLC TXRX A_krok
-        self.listProgramBStart = 6124 #from PLC TXRX B_krok
+        self.listProgramBStart = 6844 #from PLC TXRX B_krok
         self.listProgramDB = 1 #from PLC TXRX     
 
         con = c.Client()
@@ -53,7 +53,8 @@ class cQueue:
             _e = i[4].to_bytes(2, 'big')
             _f = i[5].to_bytes(2, 'big')
             _g = i[6].to_bytes(2, 'big')
-            _trackAbytes.extend(_a+ _y0+_y1+_y2+_y3+_y4+_y5+_y6+_y7+ _b+ _c + _c + _d+ _e+ _f+ _g)
+            _h = i[0].to_bytes(4, 'big')
+            _trackAbytes.extend(_a+ _y0+_y1+_y2+_y3+_y4+_y5+_y6+_y7+ _b+ _c + _c + _d+ _e+ _f+ _g+_h)
 
         _trackBbytes = bytearray()
         for i in _trackB:
@@ -72,7 +73,8 @@ class cQueue:
             _e = i[4].to_bytes(2, 'big')
             _f = i[5].to_bytes(2, 'big')
             _g = i[6].to_bytes(2, 'big')
-            _trackBbytes.extend(_a+ _y0+_y1+_y2+_y3+_y4+_y5+_y6+_y7+ _b+ _c + _c + _d+ _e+ _f+ _g)
+            _h = i[0].to_bytes(4, 'big')
+            _trackBbytes.extend(_a+ _y0+_y1+_y2+_y3+_y4+_y5+_y6+_y7+ _b+ _c + _c + _d+ _e+ _f+ _g+_h)
 
         con.write_area(Areas['DB'], self.listProgramDB, self.listProgramAStart, _trackAbytes)
         con.write_area(Areas['DB'], self.listProgramDB, self.listProgramBStart, _trackBbytes)
@@ -87,7 +89,7 @@ class cQueue:
 #-------------------------------------------------------------------------
 class cPlcParams:
     def __init__(self): 
-        _listProgramStart = 12244 #from PLC TXRX.cPlcParams
+        _listProgramStart = 13684 #from PLC TXRX.cPlcParams
         _listProgramDB = 1 #from PLC TXRX
 
         con = c.Client()
