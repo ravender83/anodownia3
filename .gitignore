@@ -163,3 +163,14 @@ S7/S7anodownia3/IM/SearchIndex/_1ou.frq
 S7/S7anodownia3/IM/SearchIndex/_1ou.prx
 S7/S7anodownia3/IM/SearchIndex/_1ou.fdt
 S7/S7anodownia3/IM/SearchIndex/_1ou.fdt
+S7/S7anodownia3/IM/SearchIndex/segments.gen
+S7/S7anodownia3/S7anodownia3.ap15_1
+S7/S7anodownia3/System/PEData.idx
+S7/S7anodownia3/System/PEData.plf
+S7/S7anodownia3/XRef/XRef.db
+*.gen
+*.gen
+*.ap15_1
+*.idx
+*.plf
+*.db
