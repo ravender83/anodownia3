@@ -18,19 +18,21 @@ class App:
 		self.lista.append(_lzawieszka)		
 		if len(self.lista) > 1:
 			if (self.lista[-1].offset == -1):
+				# gdy dodano nową zawieszkę
 				_roznica = (self.lista[-1].czasStartu - self.lista[0].czasStartu).total_seconds()
 				self.przesun(_roznica)
 				self.lista[-1].offset = int(self.lista[-1].time[0])
-				self.lista[-1].czasStartu = self.dodajsekundy(self.lista[0].czasStartu, int(self.lista[-1].offset))
+				self.lista[-1].czasStartu = self.dodajsekundy(self.lista[0].czasStartu, int(self.lista[-1].offset))				
 			else:
 				self.lista[-1].move_right(self.lista[-1].offset)
 		else:
 			self.lista[-1].offset = 0
-		
+		self.lista[-1].czasKonca = self.dodajsekundy(self.lista[-1].czasStartu, self.lista[-1].time[-1] - self.lista[-1].time[0]+self.tolerancja)
+
 
 	def przesun(self, offset=0):
 		# -------- Przesunięcie zaraz za ostatni wykres --------
-		self.lista[-1].move_right(offset+self.tolerancja)		
+		self.lista[-1].move_right(offset+10)		
 		
 		# -------- Przesunięcie wanny --------
 		offset = 0

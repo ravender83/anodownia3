@@ -10,6 +10,7 @@ class GenerujZawieszke:
 		self.czasPrzejazduDzwigu = _lczasPrzejazduDzwigu
 		self.csv = {}
 		self.czasStartu = _dataczas
+		self.czasKonca = _dataczas
 
 		self.open(_lpath, _dataczas)
 		
@@ -21,12 +22,14 @@ class GenerujZawieszke:
 
 			# Odczytanie numeru programu i czasu startu zawieszki
 			_rowt = next(_csv_reader)
-			self.offset = int(_rowt[1])
+			self.offset = int(_rowt[1].strip())
 
 			if self.offset == -1:
 				self.czasStartu = _dataczas
+				self.czasKonca = _dataczas
 			else:
-				self.czasStartu = datetime.strptime(_rowt[0], '%Y-%m-%d %H:%M:%S')		
+				self.czasStartu = datetime.strptime(_rowt[0].strip(), '%Y-%m-%d %H:%M:%S')	
+				self.czasKonca =  datetime.strptime(_rowt[2].strip(), '%Y-%m-%d %H:%M:%S')	
 
 			# Jeśli ilosc powtorzeń wynosi zero, to ustaw jeden
 			for row in _csv_reader:

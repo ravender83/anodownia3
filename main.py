@@ -24,9 +24,7 @@ def pri(zaw, u):
 	print(f'time{u} = {zaw.lista[-1].time}')
 	print(f'rectA{u} = {zaw.lista[-1].get_rect("A", tolerancja)}')
 	print(f'rectB{u} = {zaw.lista[-1].get_rect("B", tolerancja)}')	
-
 '''
-
 
 def generuj(_s7params):
 	zawieszki = App(tolerancja)
@@ -53,18 +51,17 @@ def generuj(_s7params):
 	s7plc = cQueue(A, B)
 '''
 
-
 #-------------------------------------------------------------------------
 # Funkcja szuka plików csv o nazwie liczbowej. Nazwę każdego znalezionego pliku zapisuje
 # do sortowanej listy. W przypadku znalezienia pliku 'new.csv' zapisuje w pierwszej linijce
 # aktualny czas sterownika PLC i zmienia jego nazwę na największy możliwy numer
 # return: list [1, 2, 5, 6, ...] - nazwy plików w folderze csv/
 #-------------------------------------------------------------------------
-def zapiszCzasCSV(_file, _dataczas, _offset):
+def zapiszCzasCSV(_file, _dataczas, _offset, _czaskonca):
 	with open(f'csv/{_file}.csv', 'r', newline='') as f:
 		_lines = f.readlines()
 	f.close
-	_lines[0] = f'{_dataczas}, {_offset}\r\n'
+	_lines[0] = f'{_dataczas}, {_offset}, {_czaskonca}\r\n'
 	with open(f'csv/{_file}.csv', 'w', newline='') as f:			
 		f.writelines(_lines)
 	f.close
@@ -92,7 +89,7 @@ def generuj(_listaPlikowCSV, _dataczas):
 
 	for plikCSV in _listaPlikowCSV:
 		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', plikCSV ,czas_pracy_dzwigu, czas_przejazdu_dzwigu, _dataczas))
-		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].czasStartu, zawieszki.lista[-1].offset)
+		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].czasStartu, zawieszki.lista[-1].offset, zawieszki.lista[-1].czasKonca)
 		pri(zawieszki, plikCSV)
 
 
