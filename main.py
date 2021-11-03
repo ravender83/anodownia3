@@ -11,6 +11,8 @@ from classes.app import App
 from classes.generujzawieszke import GenerujZawieszke
 import os
 import glob
+import csv
+from datetime import datetime
 
 # CONFIG
 czas_pracy_dzwigu = 10 # czas opuszczenia lub podnoszenia dzwigu
@@ -67,7 +69,7 @@ def zapiszCzasCSV(_file, _dataczas, _offset, _czaskonca):
 	f.close
 
 
-def loadCSV():
+def loadCSV(_dataczas):
 	_csvFiles = []
 	_maxNr = 0
 
@@ -77,6 +79,17 @@ def loadCSV():
 				_maxNr = int(file[4:-4])
 			_csvFiles.append( int(file[4:-4]) )
 
+	_csvFilesTemp = _csvFiles[:]
+	for _file in _csvFiles:
+		with open(f'csv/{_file}.csv') as csv_file:
+			_csv_reader = csv.reader(csv_file, delimiter=',')
+			_rowt = next(_csv_reader)
+			if int(_rowt[1].strip()) != -1:
+				_czasKonca = datetime.strptime(_rowt[2].strip(), '%Y-%m-%d %H:%M:%S')
+				if _dataczas > _czasKonca:
+					_csvFilesTemp.remove(_file)
+		csv_file.close
+	_csvFiles = _csvFilesTemp[:]
 	# znaleziono nowy plik - ustawienie czasu PLC, zmiana nazwy
 	if os.path.isfile('csv/new.csv'):
 		os.rename('csv/new.csv', f'csv/{_maxNr+1}.csv')
@@ -98,7 +111,7 @@ def main(argv):
 		s7params = cPlcParams() #TODO: dodać wyjątek, jeśli nie pobrano parametrów
 
 		if (s7params.PLCready == 1):
-			listaPlikowCSV = loadCSV()
+			listaPlikowCSV = loadCSV(s7params.dataczas)
 			generuj(listaPlikowCSV, s7params.dataczas)						
 		else:
 			print('Sterownik PLC nie jest gotowy do pracy...')

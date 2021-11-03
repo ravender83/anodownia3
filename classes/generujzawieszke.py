@@ -57,6 +57,7 @@ class GenerujZawieszke:
 					self.time.append(row[1] - self.czasPracyDzwigu)
 					self.tubs.append(row[0])
 					self.time.append(row[1])
+		csv_file.close()
 
 
 	# Przesunięcie wszystkich czasów zawieszki o dany offset
