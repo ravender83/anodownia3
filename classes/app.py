@@ -1,5 +1,6 @@
 from datetime import datetime
 from datetime import timedelta
+from operator import itemgetter
 
 class App:
 
@@ -89,6 +90,36 @@ class App:
 					kolizje = y[1] - x[0]+3
 					break
 		return kolizje		
+
+
+	def generuj_sciezke(self, lopt):
+		plc = []
+		program = []
+
+		for key1, _zawieszka in enumerate(self.lista):
+			for key2, val2 in _zawieszka.get_dict(lopt).items():
+				if (key2==1) or (key2==19):
+					_str = 'pobierz'
+				else:
+					_str = 'umiesc'
+
+				_TXstart = int(val2[0])
+				_TXkoniec = int(val2[1])
+				_TXwanna = key2
+				_TXname = _zawieszka.name
+				_TXoperacja = _str
+				_TXpraca = _zawieszka.csv[key2][0]
+				_TXobciek = _zawieszka.csv[key2][1]
+				_TXpowtorzenia = _zawieszka.csv[key2][2]
+
+				plc.append([ _TXstart, _TXwanna, _TXname, _TXoperacja, _TXpraca, _TXobciek, _TXpowtorzenia ])
+
+				if key2!=1 and key2!=18 and key2!=19 and key2!=36:
+					plc.append([ _TXkoniec, _TXwanna, _TXname, 'wyjmij', 0, 0, 0])
+		plc = sorted(plc, key=itemgetter(0))
+
+		program = list(plc)
+		return program
 
 	'''
 	def rysuj_sciezke(self, lopt):

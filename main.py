@@ -26,6 +26,8 @@ def pri(zaw, u):
 	print(f'time{u} = {zaw.lista[-1].time}')
 	print(f'rectA{u} = {zaw.lista[-1].get_rect("A", tolerancja)}')
 	print(f'rectB{u} = {zaw.lista[-1].get_rect("B", tolerancja)}')	
+	print(f'start{u} = "{zaw.lista[-1].czasStartu}"')
+	print(f'koniec{u} = "{zaw.lista[-1].czasKonca}"')
 '''
 
 def generuj(_s7params):
@@ -104,6 +106,21 @@ def generuj(_listaPlikowCSV, _dataczas):
 		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', plikCSV ,czas_pracy_dzwigu, czas_przejazdu_dzwigu, _dataczas))
 		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].czasStartu, zawieszki.lista[-1].offset, zawieszki.lista[-1].czasKonca)
 		pri(zawieszki, plikCSV)
+
+	# -------------------------- A ----------------------------
+	A = zawieszki.generuj_sciezke('A')
+	with open('csv/A.csv', 'w', newline='') as f:
+		write = csv.writer(f)
+		write.writerows(A)
+	f.close
+	#print(A)
+	# -------------------------- B ----------------------------
+	A = zawieszki.generuj_sciezke('B')
+	with open('csv/B.csv', 'w', newline='') as f:
+		write = csv.writer(f)
+		write.writerows(A)
+	f.close
+	#print(B)	
 
 
 def main(argv):

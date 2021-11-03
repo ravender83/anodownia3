@@ -5,7 +5,7 @@ class GenerujZawieszke:
 	def __init__(self, _lpath, lname, _lczasPracyDzwigu, _lczasPrzejazduDzwigu, _dataczas):
 		self.tubs = []
 		self.time = []
-		self.name = str(lname)
+		self.name = lname
 		self.czasPracyDzwigu = _lczasPracyDzwigu
 		self.czasPrzejazduDzwigu = _lczasPrzejazduDzwigu
 		self.csv = {}
