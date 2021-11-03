@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # S7
-S7/
+S7/**
 
 # Distribution / packaging
 .Python
@@ -127,50 +127,3 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
-
-# Pyre type checker
-.pyre/
-S7/S7anodownia3/IM/SearchIndex/_1ou.fdt
-S7/S7anodownia3/IM/SearchIndex/_1ou.fdx
-S7/S7anodownia3/IM/SearchIndex/_1ou.fnm
-S7/S7anodownia3/IM/SearchIndex/_1ou.frq
-S7/S7anodownia3/IM/SearchIndex/_1ou.prx
-S7/S7anodownia3/IM/SearchIndex/_1ou.tii
-S7/S7anodownia3/IM/SearchIndex/_1ou.tis
-S7/S7anodownia3/IM/SearchIndex/_1ou.tvd
-S7/S7anodownia3/IM/SearchIndex/_1ou.tvf
-S7/S7anodownia3/IM/SearchIndex/_1ou.tvx
-S7/S7anodownia3/IM/SearchIndex/_1ou_4.del
-S7/S7anodownia3/IM/SearchIndex/_1ov.cfs
-S7/S7anodownia3/IM/SearchIndex/_1ov_1.del
-S7/S7anodownia3/IM/SearchIndex/_1ow.cfs
-S7/S7anodownia3/IM/SearchIndex/_1ow_1.del
-S7/S7anodownia3/IM/SearchIndex/_1ox.cfs
-S7/S7anodownia3/IM/SearchIndex/_1oy.cfs
-S7/S7anodownia3/IM/SearchIndex/_1oy_1.del
-S7/S7anodownia3/IM/SearchIndex/_1oz.cfs
-S7/S7anodownia3/IM/SearchIndex/_1oz_1.del
-S7/S7anodownia3/IM/SearchIndex/_1p0.cfs
-S7/S7anodownia3/IM/SearchIndex/segments.gen
-S7/S7anodownia3/S7anodownia3.ap15_1
-S7/S7anodownia3/System/PEData.idx
-S7/S7anodownia3/System/PEData.plf
-S7/S7anodownia3/XRef/XRef.db
-S7/S7anodownia3/IM/SearchIndex/_1ou.fdt
-S7/S7anodownia3/IM/SearchIndex/_1ou.fdx
-S7/S7anodownia3/IM/SearchIndex/_1ou.fnm
-S7/S7anodownia3/IM/SearchIndex/_1ou.frq
-S7/S7anodownia3/IM/SearchIndex/_1ou.prx
-S7/S7anodownia3/IM/SearchIndex/_1ou.fdt
-S7/S7anodownia3/IM/SearchIndex/_1ou.fdt
-S7/S7anodownia3/IM/SearchIndex/segments.gen
-S7/S7anodownia3/S7anodownia3.ap15_1
-S7/S7anodownia3/System/PEData.idx
-S7/S7anodownia3/System/PEData.plf
-S7/S7anodownia3/XRef/XRef.db
-*.gen
-*.gen
-*.ap15_1
-*.idx
-*.plf
-*.db
