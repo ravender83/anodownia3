@@ -124,7 +124,6 @@ def generuj(_listaPlikowCSV, _dataczas):
 	s7plc = cQueue(A, B)	
 
 
-
 def main(argv):
 	if os.path.isfile('csv/new.csv'):		
 		s7params = cPlcParams() #TODO: dodać wyjątek, jeśli nie pobrano parametrów

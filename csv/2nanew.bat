@@ -1,1 +1,2 @@
-ren 2.csv new.csv
+del 2.csv
+copy new2.csv new.csv

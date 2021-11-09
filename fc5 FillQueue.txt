@@ -1,0 +1,41 @@
+IF ("TXRX".A_count > 0) AND ("TXRX".B_count > 0) THEN
+    FOR #i_startu := 0 TO 179 DO
+        IF "TXRX".A_krok[#i_startu].offset = "A".status.last_offet THEN
+            EXIT;
+        END_IF;
+    END_FOR;
+    #new_count := "TXRX".A_count - #i_startu;
+    
+    "A".kolejka.front := 0;
+    "A".kolejka.rear := 0;
+    "A".kolejka.count := 0;
+    
+    FOR #i := (#i_startu) TO #i_startu+"TXRX".A_count - 1 DO
+        "Enqueue"(in_object:= "TXRX".A_krok[#i],
+                  error=> "A".error_enq,
+                  queue:= "A".kolejka);
+    END_FOR;
+    
+    "B".kolejka.front := 0;
+    "B".kolejka.rear := 0;
+    "B".kolejka.count := 0;
+    
+    FOR #i := 0 TO "TXRX".B_count - 1 DO
+        "Enqueue"(in_object := "TXRX".B_krok[#i],
+                  error => "B".error_enq,
+                  queue := "B".kolejka);
+    END_FOR;
+    "TXRX".A_count := 0;
+    "TXRX".B_count := 0;
+    
+    IF ("A-krok_05" = TRUE) AND ("A".pobrany_krok.operacja <> 'pobierz   ') THEN
+        "A".kolejka.front := "A".kolejka.front;
+        "A".kolejka.count := "A".kolejka.count - 1;
+        "A-krok_05" := FALSE;
+    END_IF;
+END_IF;
+
+IF ("A".kolejka.count = 0) AND ("B".kolejka.count = 0) THEN
+    "A".status.last_offet := 0;
+    "B".status.last_offet := 0;
+END_IF;
