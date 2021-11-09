@@ -104,6 +104,6 @@ class GenerujZawieszke:
 			if (i+1 == len(XX)-1):
 				_stop = XX[-1]
 				tmp.append( [_start, _stop] )
-		if lopt == 'B':
-			tmp.pop()
+		#if lopt == 'B':
+		#	tmp.pop()
 		return tmp
