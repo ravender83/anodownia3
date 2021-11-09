@@ -50,13 +50,14 @@ class cQueue:
             _b = i[2].to_bytes(2, 'big') # zawieszka
             _c = (10).to_bytes(1, 'big') # ...empty...
             _d = i[3].ljust(10).encode()
-            _e = i[4].to_bytes(2, 'big')
-            _f = i[5].to_bytes(2, 'big')
-            _g = i[6].to_bytes(2, 'big')
-            _h = i[0].to_bytes(4, 'big')
+            _e = i[4].to_bytes(2, 'big') # tpraca
+            _f = i[5].to_bytes(2, 'big') # tobciek
+            _g = i[6].to_bytes(2, 'big') # tpowtorzenia
+            _h = i[0].to_bytes(4, 'big') # offset
             _trackAbytes.extend(_a+ _y0+_y1+_y2+_y3+_y4+_y5+_y6+_y7+ _b+ _c + _c + _d+ _e+ _f+ _g+_h)
 
         _trackBbytes = bytearray()
+        _off = _trackB[0][0]
         for i in _trackB:
             _a = i[1].to_bytes(2, byteorder='big') # wanna
             _y0 = i[7].to_bytes(2, byteorder='big') # rok
@@ -70,10 +71,10 @@ class cQueue:
             _b = i[2].to_bytes(2, 'big') # zawieszka
             _c = (10).to_bytes(1, 'big') # ...empty...
             _d = i[3].ljust(10).encode()
-            _e = i[4].to_bytes(2, 'big')
-            _f = i[5].to_bytes(2, 'big')
-            _g = i[6].to_bytes(2, 'big')
-            _h = i[0].to_bytes(4, 'big')
+            _e = i[4].to_bytes(2, 'big') # tpraca
+            _f = i[5].to_bytes(2, 'big') # tobciek
+            _g = i[6].to_bytes(2, 'big') # tpowtorzenia
+            _h = (i[0]-_off).to_bytes(4, 'big') # offset
             _trackBbytes.extend(_a+ _y0+_y1+_y2+_y3+_y4+_y5+_y6+_y7+ _b+ _c + _c + _d+ _e+ _f+ _g+_h)
 
         con.write_area(Areas['DB'], self.listProgramDB, self.listProgramAStart, _trackAbytes)
