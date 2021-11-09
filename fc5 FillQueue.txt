@@ -9,7 +9,7 @@ IF ("TXRX".A_count > 0) AND ("TXRX".B_count > 0) THEN
     "A".kolejka.front := 0;
     "A".kolejka.rear := 0;
     "A".kolejka.count := 0;
-    FOR #i := (#i_startu) TO #i_startu + "TXRX".A_count - 1 DO
+    FOR #i := (#i_startu) TO #i_startu + #new_countA - 1 DO
         "Enqueue"(in_object := "TXRX".A_krok[#i],
                   error => "A".error_enq,
                   queue := "A".kolejka);
@@ -18,6 +18,12 @@ IF ("TXRX".A_count > 0) AND ("TXRX".B_count > 0) THEN
     
     IF ("A-krok_05" = TRUE) AND ("A".pobrany_krok.operacja <> 'pobierz   ') THEN
         "A".kolejka.front := "A".kolejka.front + 1;
+        "A".kolejka.count := "A".kolejka.count - 1;
+    END_IF;
+    
+    IF ("A-krok_01" = TRUE) AND ("B".kolejka.count <> 0) THEN
+        "A".kolejka.front := 1;
+        "A".kolejka.rear := "A".kolejka.rear - 1;
         "A".kolejka.count := "A".kolejka.count - 1;
     END_IF;
     
@@ -32,7 +38,7 @@ IF ("TXRX".A_count > 0) AND ("TXRX".B_count > 0) THEN
     "B".kolejka.front := 0;
     "B".kolejka.rear := 0;
     "B".kolejka.count := 0;
-    FOR #i := (#i_startu) TO #i_startu + "TXRX".B_count - 1 DO
+    FOR #i := (#i_startu) TO #i_startu + #new_countB - 1 DO
         "Enqueue"(in_object := "TXRX".B_krok[#i],
                   error => "B".error_enq,
                   queue := "B".kolejka);
