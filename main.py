@@ -22,7 +22,7 @@ tolerancja = 70 + czas_pracy_dzwigu #ruchy dzwigu ponizej tej wartosci beda lacz
 '''
 czas_pracy_dzwigu = 3 # czas opuszczenia lub podnoszenia dzwigu
 czas_przejazdu_dzwigu = 1 # czas przejazdu dzwigu nad jedna wanna
-tolerancja = 5 + czas_pracy_dzwigu #ruchy dzwigu ponizej tej wartosci beda laczone razem
+tolerancja = 3 + czas_pracy_dzwigu #ruchy dzwigu ponizej tej wartosci beda laczone razem
 
 
 def pri(zaw, u):

@@ -83,6 +83,8 @@ class GenerujZawieszke:
 
 	def get_rect(self, lopt, ltol):
 		XX = []
+		# tubs1 = [1, 1, 2, 2, 3, 3, 4, 4, 7, 7, 8, 8, 14, 14, 18, 18, 19, 19, 22, 22, 28, 28, 29, 29, 36, 36]
+		# time1 = [0, 3, 4, 28, 29, 38, 39, 48, 51, 75, 76, 85, 91, 125, 129, 138, 139, 148, 151, 175, 181, 190, 191, 215, 222, 236]
 		# ------- Wygenerowanie listy zakresow -------
 		for i in list(zip(self.tubs, self.time)):
 			if lopt == 'A':
@@ -91,19 +93,25 @@ class GenerujZawieszke:
 			if lopt == 'B':
 				if i[0] >= 19:
 					XX.append( i[1] )	
-		# --------
-		_start = XX[0]
-		_stop = 0
-		tmp = []
-		for i in range(0, len(XX)-1):
-			if XX[i+1]-XX[i] <= ltol:
-				_stop = XX[i+1]
+		XX.pop()
+		XX.pop(0)
+		# Generuję listę par zakresów
+		# [3, 4, 28, 29, 38, 39, 48, 51, 75, 76, 85, 91, 125, 129]
+		it = iter(XX)
+		_pary = list(zip(it,it))
+		# [(3, 4), (28, 29), (38, 39), (48, 51), (75, 76), (85, 91), (125, 129)]
+
+		# Tworzę nową listę i dodaję do zakresów tolerancję
+		_paryTol = []
+		for i in _pary:
+			_paryTol.append([i[0], i[1]+ltol])
+		# Przykładowo dla ltol = 30
+		# [[3, 34], [28, 59], [38, 69], [48, 81], [75, 106], [85, 121], [125, 159]]
+
+		_tmp = [_paryTol[0]]
+		for i in range(1, len(_paryTol)):
+			if _paryTol[i][0] <= _tmp[-1][1]:
+				_tmp[-1][1] = _paryTol[i][1]
 			else:
-				tmp.append( [_start, _stop+30] )
-				_start = XX[i+1]
-			if (i+1 == len(XX)-1):
-				_stop = XX[-1]
-				tmp.append( [_start, _stop] )
-		#if lopt == 'B':
-		#	tmp.pop()
-		return tmp
+				_tmp.append(_paryTol[i])
+		return _tmp
