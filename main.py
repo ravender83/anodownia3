@@ -8,7 +8,7 @@
 #-------------------------------------------
 from classes.plc import *
 from classes.app import App
-from classes.generujzawieszke import GenerujZawieszke
+from classes.generujzawieszke import GenerujZawieszke 
 import os
 import glob
 import csv
@@ -20,7 +20,7 @@ czas_pracy_dzwigu = 10 # czas opuszczenia lub podnoszenia dzwigu
 czas_przejazdu_dzwigu = 3 # czas przejazdu dzwigu nad jedna wanna
 tolerancja = 70 + czas_pracy_dzwigu #ruchy dzwigu ponizej tej wartosci beda laczone razem
 '''
-czas_pracy_dzwigu = 3 # czas opuszczenia lub podnoszenia dzwigu
+czas_pracy_dzwigu = 4 # czas opuszczenia lub podnoszenia dzwigu
 czas_przejazdu_dzwigu = 1 # czas przejazdu dzwigu nad jedna wanna
 tolerancja = 3 + czas_pracy_dzwigu #ruchy dzwigu ponizej tej wartosci beda laczone razem
 
