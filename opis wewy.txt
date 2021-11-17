@@ -1,0 +1,24 @@
+poz.2_poziom_alarm - za duzo wody (odciecie glownych zaworow)
+poz.2_poziom_max
+poz.2_poziom_min - puszczanie wody
+poz.2_poziom_suchobieg - przepalenie grzałek
+
+poz.1_zatrzymanie_awaryjne - grzybek
+
+wyłączenie_awaryjne_36A1 
+
+Kaseta_jazda_na_poz.18 
+Kaseta_jazda_na_poz.19
+kaseta_Akcja - niezdefiniowane (przycisk)
+poz.18/19 Zatrzymanie_awaryjna - grzybek
+fu_stan.przejezdne_gotowość - falownik
+oscylacja na pozycji - proces
+presostat_suszarka - grzalki od wentylatora
+OTS_suszarka - czujnik bimetaliczny
+poz.18_poza_zakresem_
+
+
+samos pro
+
+swd assist 
+
