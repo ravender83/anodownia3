@@ -12,7 +12,6 @@ from classes.generujzawieszke import GenerujZawieszke
 import os
 import glob
 import csv
-from datetime import datetime
 
 # CONFIG
 '''
@@ -40,14 +39,12 @@ def pri(zaw, u):
 # aktualny czas sterownika PLC i zmienia jego nazwę na największy możliwy numer
 # return: list [1, 2, 5, 6, ...] - nazwy plików w folderze csv/
 #-------------------------------------------------------------------------
-def zapiszCzasCSV(_file, _dataczas, _offset, _czaskonca, _czas_aktualny):
+def zapiszCzasCSV(_file, _dataczas, _offset, _czaskonca):
 	with open(f'csv/{_file}.csv', 'r', newline='') as f:
 		_lines = f.readlines()
-	#f.close
-	_lines[0] = f'{_dataczas}, {_offset}, {_czaskonca}, {_czas_aktualny}\r\n'
+	_lines[0] = f'{_dataczas}, {_offset}, {_czaskonca}\r\n'
 	with open(f'csv/{_file}.csv', 'w', newline='') as f:			
 		f.writelines(_lines)
-	#f.close
 
 
 def loadCSV():
@@ -86,22 +83,20 @@ def generuj(_listaPlikowCSV, _dataczas):
 
 	for plikCSV in _listaPlikowCSV:
 		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', plikCSV ,czas_pracy_dzwigu, czas_przejazdu_dzwigu, _dataczas))
-		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].czasStartu, zawieszki.lista[-1].offset, zawieszki.lista[-1].czasKonca, _dataczas)
+		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].czasStartu, zawieszki.lista[-1].offset, zawieszki.lista[-1].czasKonca)
 		pri(zawieszki, plikCSV)
 
 	# -------------------------- A ----------------------------
-	A = zawieszki.generuj_sciezke('A', _dataczas)
+	A = zawieszki.generuj_sciezke('A')
 	with open('csv/A.csv', 'w', newline='') as f:
 		write = csv.writer(f)
 		write.writerows(A)
-	#f.close
 	print(A)
 	# -------------------------- B ----------------------------
-	B = zawieszki.generuj_sciezke('B', _dataczas)
+	B = zawieszki.generuj_sciezke('B')
 	with open('csv/B.csv', 'w', newline='') as f:
 		write = csv.writer(f)
 		write.writerows(B)
-	#f.close
 	print(B)
 	s7plc = cQueue(A, B)	
 
@@ -111,7 +106,6 @@ def main(argv):
 		s7params = cPlcParams() #TODO: dodać wyjątek, jeśli nie pobrano parametrów
 
 		if (s7params.PLCready == 1):
-		#if (1 == 1):
 			listaPlikowCSV = loadCSV()
 			generuj(listaPlikowCSV, s7params.actualtime)						
 		else:
@@ -132,4 +126,3 @@ if __name__ == "__main__":
 		print('')
 	except:
 		pass
-

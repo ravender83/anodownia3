@@ -3,27 +3,6 @@ from snap7.util import *
 from snap7.types import *
 import datetime
 import struct
-'''
-class cProgram:
-    def __init__(self, int1, dint1, int2, str1, int3, int4, int5):
-        self.wanna = int1 #0
-        self.zawieszka = int2 #6
-        self.operacja = str1 #8
-        self.tpraca = int3 #20
-        self.tobciek = int4 #22
-        self.tpowtorzenia = int5 #24
-
-    def get_list_of_values(self):
-        _a = self.wanna.to_bytes(2, 'big')
-        _b = self.offset.to_bytes(4, 'big')
-        _c = self.zawieszka.to_bytes(2, 'big')
-        _c1 = (10).to_bytes(1, 'big')
-        _d = self.operacja.ljust(10).encode()
-        _e = self.tpraca.to_bytes(2, 'big')
-        _f = self.tobciek.to_bytes(2, 'big')
-        _g = self.tpowtorzenia.to_bytes(2, 'big')
-        return _a+_b+ _c+ _c1 + _c1 + _d+ _e+ _f+ _g  
-'''
 
 class cQueue:
     def __init__(self, _trackA, _trackB): 
@@ -104,16 +83,7 @@ class cPlcParams:
         _second = int(struct.unpack('B', datas[7:8])[0])
         self.PLCready = int(struct.unpack('>h', datas[12:14])[0])
 
-        # self.Afront = int(struct.unpack('>h', datas[14:16])[0])
-        # self.Arear = int(struct.unpack('>h', datas[16:18])[0])
-        # self.Acount = int(struct.unpack('>h', datas[18:20])[0])
-        # self.Bfront = int(struct.unpack('>h', datas[20:22])[0])
-        # self.Brear = int(struct.unpack('>h', datas[22:24])[0])
-        # self.Bcount = int(struct.unpack('>h', datas[24:26])[0])     
-            
-
         self.actualtime = datetime.datetime(_year, _month, _day, _hour, _minute, _second)
-        # self.dataczas = _dataczas + datetime.timedelta(0,5) # Dodanie lekkiego minutowego opóźnienia
 
         con.disconnect()
     '''

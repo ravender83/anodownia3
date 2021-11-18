@@ -92,12 +92,8 @@ class App:
 		return kolizje		
 
 
-	def generuj_sciezke(self, lopt, _actualtime):
+	def generuj_sciezke(self, lopt):
 		plc = []
-		program = []
-
-		#_firsttime = self.lista[0].czasStartu
-		#_duration = int( (_actualtime - _firsttime).total_seconds() )
 
 		for key1, _zawieszka in enumerate(self.lista):
 			for key2, val2 in _zawieszka.get_dict(lopt).items():

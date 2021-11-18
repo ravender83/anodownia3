@@ -11,7 +11,6 @@ class GenerujZawieszke:
 		self.csv = {}
 		self.czasStartu = _dataczas
 		self.czasKonca = _dataczas
-
 		self.open(_lpath, _dataczas)
 		
 
