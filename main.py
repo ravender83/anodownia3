@@ -25,14 +25,27 @@ tolerancja = 3 + czas_pracy_dzwigu #ruchy dzwigu ponizej tej wartosci beda laczo
 folder = os.path.join(os.path.dirname(__file__), 'rav')
 ext = 'rav'
 
+
 def pri(zaw, u):
-	print('#-------------------------------------------------------')
-	print(f'tubs{u} = {zaw.lista[-1].tubs}')
-	print(f'time{u} = {zaw.lista[-1].time}')
-	print(f'rectA{u} = {zaw.lista[-1].get_rect("A", tolerancja)}')
-	print(f'rectB{u} = {zaw.lista[-1].get_rect("B", tolerancja)}')	
-	print(f'start{u} = "{zaw.lista[-1].czasStartu}"')
-	print(f'koniec{u} = "{zaw.lista[-1].czasKonca}"')
+	ls = []
+	ls.append('#-------------------------------------------------------')
+	ls.append(f'tubs{u} = {zaw.lista[-1].tubs}')
+	ls.append(f'time{u} = {zaw.lista[-1].time}')
+	ls.append(f'rectA{u} = {zaw.lista[-1].get_rect("A", tolerancja)}')
+	ls.append(f'rectB{u} = {zaw.lista[-1].get_rect("B", tolerancja)}')	
+	ls.append(f'start{u} = "{zaw.lista[-1].czasStartu}"')
+	ls.append(f'koniec{u} = "{zaw.lista[-1].czasKonca}"')
+
+	for i in ls:
+		print(i)
+	return ls
+	#print('#-------------------------------------------------------')
+	#print(f'tubs{u} = {zaw.lista[-1].tubs}')
+	#print(f'time{u} = {zaw.lista[-1].time}')
+	#print(f'rectA{u} = {zaw.lista[-1].get_rect("A", tolerancja)}')
+	#print(f'rectB{u} = {zaw.lista[-1].get_rect("B", tolerancja)}')	
+	#print(f'start{u} = "{zaw.lista[-1].czasStartu}"')
+	#print(f'koniec{u} = "{zaw.lista[-1].czasKonca}"')
 
 #-------------------------------------------------------------------------
 # Funkcja szuka plików csv o nazwie liczbowej. Nazwę każdego znalezionego pliku zapisuje
@@ -49,7 +62,12 @@ def zapiszCzasCSV(_file, _dataczas, _offset, _czaskonca):
 		f.writelines(_lines)
 
 
-def loadCSV():
+def loadCSV(_pustaKolejka):
+	if _pustaKolejka:
+		sciezka = os.path.join(os.path.dirname(__file__), 'rav', '*.rav')
+		for ravpath in glob.iglob(sciezka):
+			os.remove(ravpath)
+
 	_csvFiles = []
 	_maxNr = 0
 	sciezka = os.path.join(folder, f'*.{ext}')
@@ -76,7 +94,7 @@ def loadCSV():
 	'''
 
 	# znaleziono nowy plik - ustawienie czasu PLC, zmiana nazwy
-	sciezka = os.path.join(folder, f'new.{ext}')
+	sciezka = os.path.join(folder, f'new.csv')
 	sciezka2 = os.path.join(folder, f'{_maxNr+1}.{ext}')
 
 	if os.path.isfile(sciezka):
@@ -91,7 +109,13 @@ def generuj(_listaPlikowCSV, _dataczas):
 	for plikCSV in _listaPlikowCSV:
 		zawieszki.dodaj( GenerujZawieszke(f'{folder}/{plikCSV}.{ext}', plikCSV ,czas_pracy_dzwigu, czas_przejazdu_dzwigu, _dataczas))
 		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].czasStartu, zawieszki.lista[-1].offset, zawieszki.lista[-1].czasKonca)
-		pri(zawieszki, plikCSV)
+		a = pri(zawieszki, plikCSV)
+	
+		sciezka = os.path.join(folder, 'pri.txt')
+		textfile = open(sciezka, 'a')
+		for element in a:
+			textfile.write(element + "\n")
+		textfile.close()
 
 	# -------------------------- A ----------------------------
 	A = zawieszki.generuj_sciezke('A')
@@ -107,23 +131,23 @@ def generuj(_listaPlikowCSV, _dataczas):
 		write = csv.writer(f)
 		write.writerows(B)
 	print(B)
-	s7plc = cQueue(A, B)	
+	s7plc = cQueue(A, B)
 
 
 def main(argv):
-	sciezka = os.path.join(folder, f'new.{ext}')
+	sciezka = os.path.join(folder, f'new.csv')
 	
 	if os.path.isfile(sciezka):		
 		s7params = cPlcParams() #TODO: dodać wyjątek, jeśli nie pobrano parametrów
 
 		if (s7params.PLCready == 1):
-			listaPlikowCSV = loadCSV()
+			listaPlikowCSV = loadCSV(s7params.pustaKolejka)
 			generuj(listaPlikowCSV, s7params.actualtime)						
 		else:
 			print('Sterownik PLC nie jest gotowy do pracy...')
 		
 	else:
-		print(f'Nie odnaleziono pliku new.{ext}')
+		print(f'Nie odnaleziono pliku new.csv')
 
 
 if __name__ == "__main__":

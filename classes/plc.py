@@ -74,7 +74,7 @@ class cPlcParams:
 
         con = c.Client()
         res = con.connect('10.10.10.13', 0, 1)
-        datas = con.read_area(Areas['DB'], _listProgramDB, _listProgramStart, 14)
+        datas = con.read_area(Areas['DB'], _listProgramDB, _listProgramStart, 16)
         _year = int(struct.unpack('>h', datas[0:2])[0])
         _month = int(struct.unpack('B', datas[2:3])[0])
         _day = int(struct.unpack('B', datas[3:4])[0])
@@ -82,6 +82,7 @@ class cPlcParams:
         _minute = int(struct.unpack('B', datas[6:7])[0])
         _second = int(struct.unpack('B', datas[7:8])[0])
         self.PLCready = int(struct.unpack('>h', datas[12:14])[0])
+        self.pustaKolejka = int(struct.unpack('>h', datas[14:16])[0])
 
         self.actualtime = datetime.datetime(_year, _month, _day, _hour, _minute, _second)
 
