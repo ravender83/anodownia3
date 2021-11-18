@@ -40,17 +40,17 @@ def pri(zaw, u):
 # aktualny czas sterownika PLC i zmienia jego nazwę na największy możliwy numer
 # return: list [1, 2, 5, 6, ...] - nazwy plików w folderze csv/
 #-------------------------------------------------------------------------
-def zapiszCzasCSV(_file, _dataczas, _offset, _czaskonca):
+def zapiszCzasCSV(_file, _dataczas, _offset, _czaskonca, _czas_aktualny):
 	with open(f'csv/{_file}.csv', 'r', newline='') as f:
 		_lines = f.readlines()
-	f.close
-	_lines[0] = f'{_dataczas}, {_offset}, {_czaskonca}\r\n'
+	#f.close
+	_lines[0] = f'{_dataczas}, {_offset}, {_czaskonca}, {_czas_aktualny}\r\n'
 	with open(f'csv/{_file}.csv', 'w', newline='') as f:			
 		f.writelines(_lines)
-	f.close
+	#f.close
 
 
-def loadCSV(_dataczas):
+def loadCSV():
 	_csvFiles = []
 	_maxNr = 0
 
@@ -60,6 +60,7 @@ def loadCSV(_dataczas):
 				_maxNr = int(file[4:-4])
 			_csvFiles.append( int(file[4:-4]) )
 
+	''' Usuwanie plikow, ktore zostały ukończone. Niestety uszkadza to offset
 	_csvFilesTemp = _csvFiles[:]
 	for _file in _csvFiles:
 		with open(f'csv/{_file}.csv') as csv_file:
@@ -67,10 +68,12 @@ def loadCSV(_dataczas):
 			_rowt = next(_csv_reader)
 			if int(_rowt[1].strip()) != -1:
 				_czasKonca = datetime.strptime(_rowt[2].strip(), '%Y-%m-%d %H:%M:%S')
-				if _dataczas > _czasKonca:
-					_csvFilesTemp.remove(_file)
+				#if _dataczas > _czasKonca:
+				#	_csvFilesTemp.remove(_file)
 		csv_file.close
 	_csvFiles = _csvFilesTemp[:]
+	'''
+
 	# znaleziono nowy plik - ustawienie czasu PLC, zmiana nazwy
 	if os.path.isfile('csv/new.csv'):
 		os.rename('csv/new.csv', f'csv/{_maxNr+1}.csv')
@@ -83,34 +86,34 @@ def generuj(_listaPlikowCSV, _dataczas):
 
 	for plikCSV in _listaPlikowCSV:
 		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', plikCSV ,czas_pracy_dzwigu, czas_przejazdu_dzwigu, _dataczas))
-		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].czasStartu, zawieszki.lista[-1].offset, zawieszki.lista[-1].czasKonca)
+		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].czasStartu, zawieszki.lista[-1].offset, zawieszki.lista[-1].czasKonca, _dataczas)
 		pri(zawieszki, plikCSV)
 
 	# -------------------------- A ----------------------------
-	A = zawieszki.generuj_sciezke('A')
+	A = zawieszki.generuj_sciezke('A', _dataczas)
 	with open('csv/A.csv', 'w', newline='') as f:
 		write = csv.writer(f)
 		write.writerows(A)
-	f.close
+	#f.close
 	print(A)
 	# -------------------------- B ----------------------------
-	B = zawieszki.generuj_sciezke('B')
+	B = zawieszki.generuj_sciezke('B', _dataczas)
 	with open('csv/B.csv', 'w', newline='') as f:
 		write = csv.writer(f)
 		write.writerows(B)
-	f.close
+	#f.close
 	print(B)
-	# s7plc = cQueue(A, B)	
+	s7plc = cQueue(A, B)	
 
 
 def main(argv):
 	if os.path.isfile('csv/new.csv'):		
 		s7params = cPlcParams() #TODO: dodać wyjątek, jeśli nie pobrano parametrów
 
-		#if (s7params.PLCready == 1):
-		if (1 == 1):
-			listaPlikowCSV = loadCSV(s7params.dataczas)
-			generuj(listaPlikowCSV, s7params.dataczas)						
+		if (s7params.PLCready == 1):
+		#if (1 == 1):
+			listaPlikowCSV = loadCSV()
+			generuj(listaPlikowCSV, s7params.actualtime)						
 		else:
 			print('Sterownik PLC nie jest gotowy do pracy...')
 		

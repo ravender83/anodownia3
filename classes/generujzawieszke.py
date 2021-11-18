@@ -48,22 +48,22 @@ class GenerujZawieszke:
 			for row in _csv:
 				if len(self.tubs)>0:
 					_czas_przejazdu = (row[0]-self.tubs[-1])*self.czasPrzejazduDzwigu
-					self.time.append( self.time[-1] + _czas_przejazdu)
-					self.time.append( self.time[-1] + row[1])
+					self.time.append( int(self.time[-1] + _czas_przejazdu) )
+					self.time.append( int(self.time[-1] + row[1]) )
 					self.tubs.append( row[0] )
 					self.tubs.append( row[0] )
 				else: # Pierwsza wanna
 					self.tubs.append(row[0])
-					self.time.append(row[1] - self.czasPracyDzwigu)
+					self.time.append( int(row[1] - self.czasPracyDzwigu) )
 					self.tubs.append(row[0])
-					self.time.append(row[1])
+					self.time.append(int(row[1]) )
 		csv_file.close()
 
 
 	# Przesunięcie wszystkich czasów zawieszki o dany offset
 	def move_right(self, loffset):
 		for i in range(0, len(self.time)):
-			self.time[i] += loffset	
+			self.time[i] += int(loffset)
 
 
 	# Funkcja tworzy słownik. Klucz to numer wanny. Dwa argumenty [czas startu, czas konca] pracy

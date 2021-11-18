@@ -112,7 +112,7 @@ class cPlcParams:
         # self.Bcount = int(struct.unpack('>h', datas[24:26])[0])     
             
 
-        self.dataczas = datetime.datetime(_year, _month, _day, _hour, _minute, _second)
+        self.actualtime = datetime.datetime(_year, _month, _day, _hour, _minute, _second)
         # self.dataczas = _dataczas + datetime.timedelta(0,5) # Dodanie lekkiego minutowego opóźnienia
 
         con.disconnect()
