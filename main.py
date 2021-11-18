@@ -22,7 +22,8 @@ tolerancja = 70 + czas_pracy_dzwigu #ruchy dzwigu ponizej tej wartosci beda lacz
 czas_pracy_dzwigu = 4 # czas opuszczenia lub podnoszenia dzwigu
 czas_przejazdu_dzwigu = 1 # czas przejazdu dzwigu nad jedna wanna
 tolerancja = 3 + czas_pracy_dzwigu #ruchy dzwigu ponizej tej wartosci beda laczone razem
-
+folder = os.path.join(os.path.dirname(__file__), 'rav')
+ext = 'rav'
 
 def pri(zaw, u):
 	print('#-------------------------------------------------------')
@@ -40,23 +41,26 @@ def pri(zaw, u):
 # return: list [1, 2, 5, 6, ...] - nazwy plików w folderze csv/
 #-------------------------------------------------------------------------
 def zapiszCzasCSV(_file, _dataczas, _offset, _czaskonca):
-	with open(f'csv/{_file}.csv', 'r', newline='') as f:
+	sciezka = os.path.join(folder, f'{_file}.{ext}')
+	with open(sciezka, 'r', newline='') as f:
 		_lines = f.readlines()
 	_lines[0] = f'{_dataczas}, {_offset}, {_czaskonca}\r\n'
-	with open(f'csv/{_file}.csv', 'w', newline='') as f:			
+	with open(sciezka, 'w', newline='') as f:			
 		f.writelines(_lines)
 
 
 def loadCSV():
 	_csvFiles = []
 	_maxNr = 0
-
-	for file in glob.glob('csv/*.csv'):
-		if file[4:-4].isdigit():
-			if int(file[4:-4]) > _maxNr:
-				_maxNr = int(file[4:-4])
-			_csvFiles.append( int(file[4:-4]) )
-
+	sciezka = os.path.join(folder, f'*.{ext}')
+	for file in glob.glob(sciezka):
+		_filename = os.path.splitext(os.path.basename(file))[0]		
+		if _filename.isdigit():
+			_dig = int(_filename)
+			if _dig > _maxNr:
+				_maxNr = _dig
+			_csvFiles.append( _dig )
+	
 	''' Usuwanie plikow, ktore zostały ukończone. Niestety uszkadza to offset
 	_csvFilesTemp = _csvFiles[:]
 	for _file in _csvFiles:
@@ -72,8 +76,11 @@ def loadCSV():
 	'''
 
 	# znaleziono nowy plik - ustawienie czasu PLC, zmiana nazwy
-	if os.path.isfile('csv/new.csv'):
-		os.rename('csv/new.csv', f'csv/{_maxNr+1}.csv')
+	sciezka = os.path.join(folder, f'new.{ext}')
+	sciezka2 = os.path.join(folder, f'{_maxNr+1}.{ext}')
+
+	if os.path.isfile(sciezka):
+		os.rename(sciezka, sciezka2)
 		_csvFiles.append( int(_maxNr+1) )
 	return sorted(_csvFiles)	
 
@@ -82,19 +89,21 @@ def generuj(_listaPlikowCSV, _dataczas):
 	zawieszki = App(tolerancja)
 
 	for plikCSV in _listaPlikowCSV:
-		zawieszki.dodaj( GenerujZawieszke(f'csv/{plikCSV}.csv', plikCSV ,czas_pracy_dzwigu, czas_przejazdu_dzwigu, _dataczas))
+		zawieszki.dodaj( GenerujZawieszke(f'{folder}/{plikCSV}.{ext}', plikCSV ,czas_pracy_dzwigu, czas_przejazdu_dzwigu, _dataczas))
 		zapiszCzasCSV(plikCSV, zawieszki.lista[-1].czasStartu, zawieszki.lista[-1].offset, zawieszki.lista[-1].czasKonca)
 		pri(zawieszki, plikCSV)
 
 	# -------------------------- A ----------------------------
 	A = zawieszki.generuj_sciezke('A')
-	with open('csv/A.csv', 'w', newline='') as f:
+	sciezka = os.path.join(folder, 'A.csv')
+	with open(sciezka, 'w', newline='') as f:
 		write = csv.writer(f)
 		write.writerows(A)
 	print(A)
 	# -------------------------- B ----------------------------
 	B = zawieszki.generuj_sciezke('B')
-	with open('csv/B.csv', 'w', newline='') as f:
+	sciezka = os.path.join(folder, 'B.csv')
+	with open(sciezka, 'w', newline='') as f:
 		write = csv.writer(f)
 		write.writerows(B)
 	print(B)
@@ -102,7 +111,9 @@ def generuj(_listaPlikowCSV, _dataczas):
 
 
 def main(argv):
-	if os.path.isfile('csv/new.csv'):		
+	sciezka = os.path.join(folder, f'new.{ext}')
+	
+	if os.path.isfile(sciezka):		
 		s7params = cPlcParams() #TODO: dodać wyjątek, jeśli nie pobrano parametrów
 
 		if (s7params.PLCready == 1):
@@ -112,7 +123,7 @@ def main(argv):
 			print('Sterownik PLC nie jest gotowy do pracy...')
 		
 	else:
-		print('Nie odnaleziono pliku prog/new.csv')
+		print(f'Nie odnaleziono pliku new.{ext}')
 
 
 if __name__ == "__main__":
