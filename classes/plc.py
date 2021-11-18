@@ -77,13 +77,10 @@ class cQueue:
             _h = (i[0]-_off).to_bytes(4, 'big') # offset
             _trackBbytes.extend(_a+ _y0+_y1+_y2+_y3+_y4+_y5+_y6+_y7+ _b+ _c + _c + _d+ _e+ _f+ _g+_h)
 
-        _g = con.write_area(Areas['DB'], self.listProgramDB, self.listProgramAStart, _trackAbytes)
-        _h = con.write_area(Areas['DB'], self.listProgramDB, self.listProgramBStart, _trackBbytes)
+        con.write_area(Areas['DB'], self.listProgramDB, self.listProgramAStart, _trackAbytes)
+        con.write_area(Areas['DB'], self.listProgramDB, self.listProgramBStart, _trackBbytes)
         con.write_area(Areas['DB'], self.listProgramDB, self.listProgramAStart-2, (len(_trackA)).to_bytes(2, 'big'))
         con.write_area(Areas['DB'], self.listProgramDB, self.listProgramBStart-2, (len(_trackB)).to_bytes(2, 'big'))
-
-        print('_g >>>>>>>>>>', _g)
-        print('_h >>>>>>>>>>', _h)
         con.disconnect()
 
 #-------------------------------------------------------------------------

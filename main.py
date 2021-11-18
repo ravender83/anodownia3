@@ -33,32 +33,6 @@ def pri(zaw, u):
 	print(f'rectB{u} = {zaw.lista[-1].get_rect("B", tolerancja)}')	
 	print(f'start{u} = "{zaw.lista[-1].czasStartu}"')
 	print(f'koniec{u} = "{zaw.lista[-1].czasKonca}"')
-'''
-
-def generuj(_s7params):
-	zawieszki = App(tolerancja)
-	# (lpath, lczasPracyDzwigu, lczasPrzejazduDzwigu)
-	nowaZawieszka = GenerujZawieszke(f'prog/new.csv', 1, praca, przejazd)
-	pri(nowaZawieszka)	
-
-	# -------------------------- A ----------------------------
-	A = zawieszki.generuj_sciezke(nowaZawieszka, _s7params.dataczas, 'A')
-	with open('prog/A.csv', 'w', newline='') as f:
-		write = csv.writer(f)
-		write.writerows(A)
-		f.close
-	#print(A)
-
-	# -------------------------- B ----------------------------
-	B = zawieszki.generuj_sciezke(nowaZawieszka, _s7params.dataczas, 'B')
-	with open('prog/B.csv', 'w', newline='') as f:
-		write = csv.writer(f)
-		write.writerows(B)
-		f.close
-	#print(B)	
-
-	s7plc = cQueue(A, B)
-'''
 
 #-------------------------------------------------------------------------
 # Funkcja szuka plików csv o nazwie liczbowej. Nazwę każdego znalezionego pliku zapisuje
@@ -126,14 +100,15 @@ def generuj(_listaPlikowCSV, _dataczas):
 		write.writerows(B)
 	f.close
 	print(B)
-	s7plc = cQueue(A, B)	
+	# s7plc = cQueue(A, B)	
 
 
 def main(argv):
 	if os.path.isfile('csv/new.csv'):		
 		s7params = cPlcParams() #TODO: dodać wyjątek, jeśli nie pobrano parametrów
 
-		if (s7params.PLCready == 1):
+		#if (s7params.PLCready == 1):
+		if (1 == 1):
 			listaPlikowCSV = loadCSV(s7params.dataczas)
 			generuj(listaPlikowCSV, s7params.dataczas)						
 		else:
